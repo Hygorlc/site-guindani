@@ -10,9 +10,6 @@ import { useEffect, useRef, useState } from "react";
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO_URL =
   "/manus-storage/LOGOGUINDANIFUNDOBRANCO_5cf9cbef.jpeg";
-const HERO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/hero_banner-dupwyJuBpT5YfWBj2bSj7q.webp";
-
 const CATEGORIES = [
   {
     id: "aneis",
@@ -48,19 +45,34 @@ const CATEGORIES = [
 
 const HERO_SLIDES = [
   {
-    title: "Joalheria de Luxo",
-    subtitle: "Cada peça, uma obra de arte",
-    cta: "Conheça nossa coleção",
+    img: "/images/hero-1.jpg",
+    title: "Elegância em Cada Detalhe",
+    subtitle: "Conjuntos exclusivos que valorizam sua beleza",
+    cta: "Ver coleção",
   },
   {
-    title: "Diamantes Exclusivos",
-    subtitle: "Brilho que atravessa gerações",
-    cta: "Ver diamantes",
+    img: "/images/hero-2.jpg",
+    title: "Brilho Contemporâneo",
+    subtitle: "Peças com cristais que impõem presença",
+    cta: "Descobrir peças",
   },
   {
-    title: "Alianças & Solitários",
-    subtitle: "Para os momentos que duram para sempre",
-    cta: "Explorar alianças",
+    img: "/images/hero-3.jpg",
+    title: "Design Autêntico",
+    subtitle: "Brincos que traduzem sua personalidade",
+    cta: "Ver brincos",
+  },
+  {
+    img: "/images/hero-4.jpg",
+    title: "Ouro Puro, Estilo Único",
+    subtitle: "Correntes e pulseiras para todos os momentos",
+    cta: "Explorar coleção",
+  },
+  {
+    img: "/images/hero-5.jpg",
+    title: "Amor em Forma de Joia",
+    subtitle: "Peças que eternizam sentimentos",
+    cta: "Ver coleção",
   },
 ];
 
@@ -259,7 +271,7 @@ function HeroSlider() {
   const startTimer = () => {
     timerRef.current = setInterval(() => {
       setCurrent((c) => (c + 1) % HERO_SLIDES.length);
-    }, 5000);
+    }, 5500);
   };
 
   useEffect(() => {
@@ -274,85 +286,98 @@ function HeroSlider() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: "520px" }}>
-      {/* Background image */}
-      <img
-        src={HERO_URL}
-        alt="Hero"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.75)" }}
-      />
-      {/* Gradient overlay */}
+    <section className="relative w-full overflow-hidden" style={{ height: "640px" }}>
+      {/* Sliding track — each slide keeps its own image and transitions to the right */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 flex h-full"
         style={{
-          background:
-            "linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)",
+          width: `${HERO_SLIDES.length * 100}%`,
+          transform: `translateX(-${current * (100 / HERO_SLIDES.length)}%)`,
+          transition: "transform 1.1s cubic-bezier(0.65, 0, 0.35, 1)",
         }}
-      />
-
-      {/* Slides content */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="container mx-auto px-4 lg:px-8">
-          {HERO_SLIDES.map((slide, i) => (
-            <div
-              key={i}
-              className="hero-slide absolute left-0 right-0 px-4 lg:px-8"
+      >
+        {HERO_SLIDES.map((slide, i) => (
+          <div
+            key={i}
+            className="relative h-full overflow-hidden"
+            style={{ width: `${100 / HERO_SLIDES.length}%` }}
+          >
+            <img
+              src={slide.img}
+              alt={slide.title}
+              className="absolute inset-0 w-full h-full object-cover"
               style={{
-                opacity: i === current ? 1 : 0,
-                transition: "opacity 0.8s ease-in-out",
-                top: "50%",
-                transform: "translateY(-50%)",
+                objectPosition: "center 22%",
+                filter: "brightness(0.72) saturate(1.05)",
+                transform: i === current ? "scale(1.08)" : "scale(1)",
+                transition: "transform 6.5s ease-out",
               }}
-            >
-              <div style={{ maxWidth: "600px" }}>
-                <p
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to right, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.32) 55%, transparent 100%)",
+              }}
+            />
+
+            <div className="relative z-10 h-full flex items-center">
+              <div className="container mx-auto px-4 lg:px-8">
+                <div
                   style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.25em",
-                    textTransform: "uppercase",
-                    color: "#C9A96E",
-                    marginBottom: "0.75rem",
+                    maxWidth: "600px",
+                    opacity: i === current ? 1 : 0,
+                    transform: i === current ? "translateY(0)" : "translateY(18px)",
+                    transition: "opacity 0.9s ease 0.35s, transform 0.9s ease 0.35s",
                   }}
                 >
-                  Guindani
-                </p>
-                <h1
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                    fontWeight: 700,
-                    color: "white",
-                    lineHeight: 1.15,
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {slide.title}
-                </h1>
-                <p
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontSize: "1.05rem",
-                    fontWeight: 300,
-                    color: "rgba(255,255,255,0.85)",
-                    marginBottom: "2rem",
-                    letterSpacing: "0.03em",
-                  }}
-                >
-                  {slide.subtitle}
-                </p>
-                <a href="#categorias" className="btn-gold">
-                  {slide.cta}
-                </a>
+                  <p
+                    style={{
+                      fontFamily: "'Lato', sans-serif",
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.25em",
+                      textTransform: "uppercase",
+                      color: "#C9A96E",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    Guindani
+                  </p>
+                  <h1
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                      fontWeight: 700,
+                      color: "white",
+                      lineHeight: 1.15,
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    {slide.title}
+                  </h1>
+                  <p
+                    style={{
+                      fontFamily: "'Lato', sans-serif",
+                      fontSize: "1.05rem",
+                      fontWeight: 300,
+                      color: "rgba(255,255,255,0.85)",
+                      marginBottom: "2rem",
+                      letterSpacing: "0.03em",
+                    }}
+                  >
+                    {slide.subtitle}
+                  </p>
+                  <a href="#categorias" className="btn-gold">
+                    {slide.cta}
+                  </a>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {/* Slide indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {HERO_SLIDES.map((_, i) => (
           <button
