@@ -139,9 +139,7 @@ function useFadeInSections() {
 
 function Topbar() {
   return (
-    <div className="topbar">
-      Joalheria de Luxo — Qualidade e Elegância para Momentos Especiais
-    </div>
+    <div className="topbar" />
   );
 }
 
