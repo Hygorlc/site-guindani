@@ -6,10 +6,11 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { GUINDANI_LOGO } from "../assets/guindani-logo";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO_URL =
-  "/manus-storage/LOGOGUINDANIFUNDOBRANCO_5cf9cbef.jpeg";
+  GUINDANI_LOGO;
 const CATEGORIES = [
   {
     id: "aneis",
@@ -181,7 +182,7 @@ function Header({
             <img
               src={LOGO_URL}
               alt="Guindani"
-              className="w-16 h-16 object-contain"
+              className="h-16 w-auto max-w-[190px] object-contain"
             />
           </a>
 
