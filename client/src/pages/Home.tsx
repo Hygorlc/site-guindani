@@ -6,10 +6,11 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { GUINDANI_LOGO } from "../assets/guindani-logo";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO_URL =
-  "/manus-storage/LOGOGUINDANIFUNDOBRANCO_5cf9cbef.jpeg";
+  GUINDANI_LOGO;
 const CATEGORIES = [
   {
     id: "aneis",
@@ -181,7 +182,7 @@ function Header({
             <img
               src={LOGO_URL}
               alt="Guindani"
-              className="w-16 h-16 object-contain"
+              className="h-16 w-auto max-w-[190px] object-contain"
             />
           </a>
 
@@ -196,7 +197,7 @@ function Header({
 
           {/* WhatsApp CTA (desktop) */}
           <a
-            href="https://wa.me/5511999999999?text=Olá! Gostaria de saber mais sobre as joias."
+            href="https://wa.me/5551997399494?text=Olá! Gostaria de saber mais sobre as joias."
             target="_blank"
             rel="noopener noreferrer"
             className="hidden md:flex items-center gap-2 btn-gold"
@@ -248,7 +249,7 @@ function Header({
               </a>
             ))}
             <a
-              href="https://wa.me/5511999999999"
+              href="https://wa.me/5551997399494"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-gold text-center mt-2"
@@ -696,7 +697,7 @@ function ContactSection() {
     const msg = encodeURIComponent(
       `Olá! Me chamo ${form.name}.\n\n${form.message}\n\nEmail: ${form.email}`
     );
-    window.open(`https://wa.me/5511999999999?text=${msg}`, "_blank");
+    window.open(`https://wa.me/5551997399494?text=${msg}`, "_blank");
     setSent(true);
     setTimeout(() => setSent(false), 4000);
   };
@@ -762,7 +763,7 @@ function ContactSection() {
                     </svg>
                   ),
                   label: "Telefone / WhatsApp",
-                  value: "(11) 99999-9999",
+                  value: "(51) 99739-9494",
                 },
                 {
                   icon: (
@@ -1104,7 +1105,7 @@ function Footer() {
 function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/5511999999999?text=Olá! Gostaria de saber mais sobre as joias da Guindani."
+      href="https://wa.me/5551997399494?text=Olá! Gostaria de saber mais sobre as joias da Guindani."
       target="_blank"
       rel="noopener noreferrer"
       className="whatsapp-btn"
