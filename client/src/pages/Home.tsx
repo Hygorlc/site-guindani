@@ -139,9 +139,7 @@ function useFadeInSections() {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function Topbar() {
-  return (
-    <div className="topbar" />
-  );
+  return null;
 }
 
 function Header({
@@ -169,10 +167,11 @@ function Header({
 
   return (
     <header
-      className="sticky top-0 z-50 transition-shadow duration-300"
+      className="sticky top-0 z-50 transition-all duration-300"
       style={{
-        background: "white",
-        boxShadow: scrolled ? "0 2px 16px rgba(0,0,0,0.10)" : "0 1px 0 #e8dcc8",
+        background: scrolled || menuOpen ? "rgba(10, 10, 10, 0.72)" : "rgba(0, 0, 0, 0.18)",
+        backdropFilter: "blur(10px)",
+        boxShadow: scrolled ? "0 8px 24px rgba(0,0,0,0.24)" : "0 1px 0 rgba(255,255,255,0.18)",
       }}
     >
       <div className="container mx-auto px-4 lg:px-8">
@@ -189,7 +188,12 @@ function Header({
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="nav-link">
+              <a
+                key={item.label}
+                href={item.href}
+                className="nav-link"
+                style={{ color: "white" }}
+              >
                 {item.label}
               </a>
             ))}
@@ -203,15 +207,15 @@ function Header({
           >
             <div className="w-6 flex flex-col gap-1.5">
               <span
-                className="block h-0.5 bg-gray-800 transition-all duration-300"
+                className="block h-0.5 bg-white transition-all duration-300"
                 style={{ transform: menuOpen ? "rotate(45deg) translateY(8px)" : "none" }}
               />
               <span
-                className="block h-0.5 bg-gray-800 transition-all duration-300"
+                className="block h-0.5 bg-white transition-all duration-300"
                 style={{ opacity: menuOpen ? 0 : 1 }}
               />
               <span
-                className="block h-0.5 bg-gray-800 transition-all duration-300"
+                className="block h-0.5 bg-white transition-all duration-300"
                 style={{ transform: menuOpen ? "rotate(-45deg) translateY(-8px)" : "none" }}
               />
             </div>
@@ -221,14 +225,22 @@ function Header({
         {/* Mobile menu */}
         <div
           className="md:hidden overflow-hidden transition-all duration-300"
-          style={{ maxHeight: menuOpen ? "400px" : "0" }}
+          style={{
+            maxHeight: menuOpen ? "400px" : "0",
+            background: "rgba(10,10,10,0.72)",
+            backdropFilter: "blur(10px)",
+          }}
         >
-          <nav className="flex flex-col py-4 gap-4 border-t border-gray-100">
+          <nav
+            className="flex flex-col py-4 gap-4 border-t"
+            style={{ borderColor: "rgba(255,255,255,0.16)" }}
+          >
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 className="nav-link"
+                style={{ color: "white" }}
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}
@@ -263,7 +275,15 @@ function HeroSlider() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: "640px" }}>
+    <section
+      className="relative w-full overflow-hidden"
+      style={{
+        height: "calc(100vh + 80px)",
+        minHeight: "720px",
+        marginTop: "-80px",
+        paddingTop: "80px",
+      }}
+    >
       {/* Sliding track — each slide keeps its own image and transitions to the right */}
       <div
         className="absolute inset-0 flex h-full"
