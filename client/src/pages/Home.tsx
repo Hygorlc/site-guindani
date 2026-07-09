@@ -763,7 +763,7 @@ function ContactSection() {
                     </svg>
                   ),
                   label: "Endereço",
-                  value: "Rua das Joias, 100 — São Paulo, SP",
+                  value: "Porto Alegre - RS",
                 },
                 {
                   icon: (
@@ -781,7 +781,7 @@ function ContactSection() {
                     </svg>
                   ),
                   label: "E-mail",
-                  value: "contato@lumierejoias.com.br",
+                  value: "comercial@gmail.com.br",
                 },
                 {
                   icon: (
@@ -790,7 +790,7 @@ function ContactSection() {
                     </svg>
                   ),
                   label: "Horário",
-                  value: "Seg a Sex: 9h às 18h | Sáb: 9h às 13h",
+                  value: "Seg a Sex: 08:30 às 17:30 | Sáb: 9h às 13h",
                 },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-3">
