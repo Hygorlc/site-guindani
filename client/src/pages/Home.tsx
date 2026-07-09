@@ -297,16 +297,27 @@ function HeroSlider() {
           <div
             key={i}
             className="relative h-full overflow-hidden"
-            style={{ width: `${100 / HERO_SLIDES.length}%` }}
+            style={{ width: `${100 / HERO_SLIDES.length}%`, background: "#090806" }}
           >
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${slide.img})`,
+                backgroundPosition: "center center",
+                backgroundSize: "cover",
+                filter: "brightness(0.42) saturate(1.05) blur(18px)",
+                transform: i === current ? "scale(1.08)" : "scale(1.04)",
+                transition: "transform 6.5s ease-out",
+              }}
+            />
             <img
               src={slide.img}
               alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain"
               style={{
-                objectPosition: "center 22%",
-                filter: "brightness(0.72) saturate(1.05)",
-                transform: i === current ? "scale(1.08)" : "scale(1)",
+                objectPosition: "center center",
+                filter: "brightness(0.84) saturate(1.06)",
+                transform: i === current ? "scale(1.04)" : "scale(1)",
                 transition: "transform 6.5s ease-out",
               }}
             />
