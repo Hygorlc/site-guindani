@@ -5,8 +5,10 @@
  * Tipografia: Playfair Display (títulos) + Lato (corpo)
  */
 
+
 import { useEffect, useRef, useState } from "react";
 import { GUINDANI_LOGO } from "../assets/guindani-logo";
+
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO_URL =
@@ -44,6 +46,7 @@ const CATEGORIES = [
   },
 ];
 
+
 const HERO_SLIDES = [
   {
     img: "/images/hero-1.jpg",
@@ -76,6 +79,7 @@ const HERO_SLIDES = [
     cta: "Ver coleção",
   },
 ];
+
 
 const SERVICES = [
   {
@@ -116,7 +120,9 @@ const SERVICES = [
   },
 ];
 
+
 const TABS = ["Todos", "Anéis", "Colares", "Pulseiras", "Brincos", "Alianças"];
+
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function useFadeInSections() {
@@ -136,11 +142,14 @@ function useFadeInSections() {
   }, []);
 }
 
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
 
 function Topbar() {
   return null;
 }
+
 
 function Header({
   activeTab,
@@ -152,11 +161,13 @@ function Header({
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
   const navItems = [
     { label: "Sobre Nós", href: "#sobre" },
@@ -164,6 +175,7 @@ function Header({
     { label: "Serviços", href: "#servicos" },
     { label: "Contato", href: "#contato" },
   ];
+
 
   return (
     <header
@@ -185,6 +197,7 @@ function Header({
             />
           </a>
 
+
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
@@ -198,6 +211,7 @@ function Header({
               </a>
             ))}
           </nav>
+
 
           {/* Mobile menu toggle */}
           <button
@@ -221,6 +235,7 @@ function Header({
             </div>
           </button>
         </div>
+
 
         {/* Mobile menu */}
         <div
@@ -253,9 +268,11 @@ function Header({
   );
 }
 
+
 function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
 
   const startTimer = () => {
     timerRef.current = setInterval(() => {
@@ -263,16 +280,19 @@ function HeroSlider() {
     }, 5500);
   };
 
+
   useEffect(() => {
     startTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
 
   const goTo = (i: number) => {
     setCurrent(i);
     if (timerRef.current) clearInterval(timerRef.current);
     startTimer();
   };
+
 
   return (
     <section
@@ -297,16 +317,27 @@ function HeroSlider() {
           <div
             key={i}
             className="relative h-full overflow-hidden"
-            style={{ width: `${100 / HERO_SLIDES.length}%` }}
+            style={{ width: `${100 / HERO_SLIDES.length}%`, background: "#090806" }}
           >
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${slide.img})`,
+                backgroundPosition: "center center",
+                backgroundSize: "cover",
+                filter: "brightness(0.42) saturate(1.05) blur(18px)",
+                transform: i === current ? "scale(1.08)" : "scale(1.04)",
+                transition: "transform 6.5s ease-out",
+              }}
+            />
             <img
               src={slide.img}
               alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain"
               style={{
-                objectPosition: "center 22%",
-                filter: "brightness(0.72) saturate(1.05)",
-                transform: i === current ? "scale(1.08)" : "scale(1)",
+                objectPosition: "center center",
+                filter: "brightness(0.84) saturate(1.06)",
+                transform: i === current ? "scale(1.04)" : "scale(1)",
                 transition: "transform 6.5s ease-out",
               }}
             />
@@ -317,6 +348,7 @@ function HeroSlider() {
                   "linear-gradient(to right, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.32) 55%, transparent 100%)",
               }}
             />
+
 
             <div className="relative z-10 h-full flex items-center">
               <div className="container mx-auto px-4 lg:px-8">
@@ -375,6 +407,7 @@ function HeroSlider() {
         ))}
       </div>
 
+
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {HERO_SLIDES.map((_, i) => (
           <button
@@ -398,6 +431,7 @@ function HeroSlider() {
   );
 }
 
+
 function CategoriesSection({
   activeTab,
   onTabChange,
@@ -411,6 +445,7 @@ function CategoriesSection({
       : CATEGORIES.filter((c) =>
           c.label.toLowerCase().includes(activeTab.toLowerCase())
         );
+
 
   return (
     <section id="categorias" className="py-16 bg-white fade-in-section">
@@ -442,6 +477,7 @@ function CategoriesSection({
           </h2>
         </div>
 
+
         {/* Tabs */}
         <div
           className="flex overflow-x-auto gap-0 border-b mb-8"
@@ -458,6 +494,7 @@ function CategoriesSection({
           ))}
         </div>
 
+
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {(filtered.length > 0 ? filtered : CATEGORIES).map((cat) => (
@@ -473,6 +510,7 @@ function CategoriesSection({
           ))}
         </div>
 
+
         <div className="text-center mt-10">
           <a href="#contato" className="btn-dark">
             Ver Toda a Coleção
@@ -482,6 +520,7 @@ function CategoriesSection({
     </section>
   );
 }
+
 
 function AboutSection() {
   return (
@@ -550,6 +589,7 @@ function AboutSection() {
             </a>
           </div>
 
+
           {/* Stats */}
           <div className="grid grid-cols-2 gap-6">
             {[
@@ -598,6 +638,7 @@ function AboutSection() {
   );
 }
 
+
 function ServicesSection() {
   return (
     <section
@@ -631,6 +672,7 @@ function ServicesSection() {
             Nossos Serviços
           </h2>
         </div>
+
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {SERVICES.map((svc) => (
@@ -686,9 +728,11 @@ function ServicesSection() {
   );
 }
 
+
 function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -699,6 +743,7 @@ function ContactSection() {
     setSent(true);
     setTimeout(() => setSent(false), 4000);
   };
+
 
   return (
     <section id="contato" className="py-16 bg-white fade-in-section">
@@ -741,6 +786,7 @@ function ContactSection() {
             >
               Nossa equipe de consultores está pronta para ajudá-lo a encontrar a joia perfeita. Entre em contato pelo formulário ou diretamente pelo WhatsApp.
             </p>
+
 
             <div className="flex flex-col gap-4">
               {[
@@ -813,6 +859,7 @@ function ContactSection() {
             </div>
           </div>
 
+
           {/* Form */}
           <form
             onSubmit={handleSubmit}
@@ -834,6 +881,7 @@ function ContactSection() {
             >
               Envie sua mensagem
             </h3>
+
 
             {[
               { name: "name", label: "Seu nome", type: "text", placeholder: "Nome completo" },
@@ -878,6 +926,7 @@ function ContactSection() {
               </div>
             ))}
 
+
             <div>
               <label
                 style={{
@@ -917,6 +966,7 @@ function ContactSection() {
               />
             </div>
 
+
             <button type="submit" className="btn-gold w-full text-center">
               {sent ? "Mensagem Enviada!" : "Enviar pelo WhatsApp"}
             </button>
@@ -926,6 +976,7 @@ function ContactSection() {
     </section>
   );
 }
+
 
 function Footer() {
   const footerLinks = [
@@ -942,6 +993,7 @@ function Footer() {
       links: ["Contato", "WhatsApp", "Política de Troca", "Garantia", "FAQ"],
     },
   ];
+
 
   return (
     <footer style={{ background: "#1A1A1A", color: "white" }}>
@@ -1021,6 +1073,7 @@ function Footer() {
             </div>
           </div>
 
+
           {/* Links */}
           {footerLinks.map((col) => (
             <div key={col.title}>
@@ -1061,6 +1114,7 @@ function Footer() {
           ))}
         </div>
 
+
         {/* Bottom bar */}
         <div
           className="flex flex-col md:flex-row items-center justify-between gap-3 pt-6"
@@ -1099,6 +1153,7 @@ function Footer() {
     </footer>
   );
 }
+
 
 function WhatsAppButton() {
   return (
@@ -1140,10 +1195,12 @@ function WhatsAppButton() {
   );
 }
 
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Todos");
   useFadeInSections();
+
 
   return (
     <div className="min-h-screen flex flex-col">
