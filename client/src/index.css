@@ -182,12 +182,12 @@
     position: relative;
   }
   header.sticky > .container > .flex {
-    height: 116px;
+    height: 128px;
     flex-direction: column;
     justify-content: center;
-    gap: 0.35rem;
+    gap: 1.15rem;
     padding-top: 0.65rem;
-    padding-bottom: 0.8rem;
+    padding-bottom: 1.05rem;
   }
   header.sticky > .container > .flex > a:first-child {
     order: 1;
@@ -202,20 +202,21 @@
   header.sticky > .container > .flex > button {
     position: absolute;
     right: 1rem;
-    top: 2rem;
+    top: 2.25rem;
   }
   main > section:first-child {
-    height: calc(100vh + 116px) !important;
-    margin-top: -116px !important;
-    padding-top: 116px !important;
+    height: calc(100vh + 128px) !important;
+    margin-top: -128px !important;
+    padding-top: 128px !important;
   }
   @media (max-width: 767px) {
     header.sticky > .container > .flex {
-      height: 96px;
+      height: 108px;
       align-items: center;
       justify-content: center;
+      gap: 0.8rem;
       padding-top: 0.55rem;
-      padding-bottom: 0.55rem;
+      padding-bottom: 0.85rem;
     }
     header.sticky > .container > .flex > a:first-child img {
       height: 4rem;
@@ -223,12 +224,12 @@
     }
     header.sticky > .container > .flex > button {
       right: 0;
-      top: 1.85rem;
+      top: 2rem;
     }
     main > section:first-child {
-      height: calc(100vh + 96px) !important;
-      margin-top: -96px !important;
-      padding-top: 96px !important;
+      height: calc(100vh + 108px) !important;
+      margin-top: -108px !important;
+      padding-top: 108px !important;
     }
   }
 
