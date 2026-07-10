@@ -256,6 +256,11 @@
   .hero-slide.active {
     opacity: 1;
   }
+  main > section:first-child img.object-contain {
+    width: 86% !important;
+    height: 86% !important;
+    margin: auto;
+  }
 
   /* Section fade-in on scroll */
   .fade-in-section {
