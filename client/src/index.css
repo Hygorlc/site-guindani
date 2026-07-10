@@ -182,19 +182,19 @@
     position: relative;
   }
   header.sticky > .container > .flex {
-    height: 156px;
+    height: 188px;
     flex-direction: column;
     justify-content: center;
-    gap: 2.05rem;
-    padding-top: 0.85rem;
-    padding-bottom: 1.55rem;
+    gap: 2.35rem;
+    padding-top: 1.55rem;
+    padding-bottom: 1.75rem;
   }
   header.sticky > .container > .flex > a:first-child {
     order: 1;
   }
   header.sticky > .container > .flex > a:first-child img {
-    height: 4.5rem;
-    max-width: 210px;
+    height: 5.35rem;
+    max-width: 250px;
   }
   header.sticky > .container > .flex > nav {
     order: 2;
@@ -202,34 +202,34 @@
   header.sticky > .container > .flex > button {
     position: absolute;
     right: 1rem;
-    top: 2.75rem;
+    top: 3.4rem;
   }
   main > section:first-child {
-    height: calc(100vh + 156px) !important;
-    margin-top: -156px !important;
-    padding-top: 156px !important;
+    height: calc(100vh + 188px) !important;
+    margin-top: -188px !important;
+    padding-top: 188px !important;
   }
   @media (max-width: 767px) {
     header.sticky > .container > .flex {
-      height: 128px;
+      height: 154px;
       align-items: center;
       justify-content: center;
-      gap: 1.1rem;
-      padding-top: 0.65rem;
-      padding-bottom: 1.05rem;
+      gap: 1.35rem;
+      padding-top: 1rem;
+      padding-bottom: 1.2rem;
     }
     header.sticky > .container > .flex > a:first-child img {
-      height: 4rem;
-      max-width: 180px;
+      height: 4.75rem;
+      max-width: 210px;
     }
     header.sticky > .container > .flex > button {
       right: 0;
-      top: 2.25rem;
+      top: 2.85rem;
     }
     main > section:first-child {
-      height: calc(100vh + 128px) !important;
-      margin-top: -128px !important;
-      padding-top: 128px !important;
+      height: calc(100vh + 154px) !important;
+      margin-top: -154px !important;
+      padding-top: 154px !important;
     }
   }
 
