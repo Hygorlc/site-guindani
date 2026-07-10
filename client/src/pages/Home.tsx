@@ -486,7 +486,7 @@ function CategoriesSection({
 
         <div className="text-center mt-10">
           <a href="#contato" className="btn-dark">
-            Ver Toda a Coleção
+            Ver Catálogo
           </a>
         </div>
       </div>
