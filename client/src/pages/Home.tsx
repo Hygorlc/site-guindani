@@ -19,7 +19,7 @@ const CATEGORIES = [
   },
   {
     id: "colares",
-    label: "Colares",
+    label: "Correntes e Gargantilhas",
     img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_colares-VW5iJZU9KWjfKrAJZMcrUr.webp",
   },
   {
@@ -116,7 +116,7 @@ const SERVICES = [
   },
 ];
 
-const TABS = ["Todos", "Anéis", "Colares", "Pulseiras", "Brincos", "Alianças"];
+const TABS = ["Todos", "Anéis", "Correntes e Gargantilhas", "Pulseiras", "Brincos", "Alianças"];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function useFadeInSections() {
@@ -946,7 +946,7 @@ function Footer() {
     },
     {
       title: "Categorias",
-      links: ["Anéis", "Colares", "Pulseiras", "Brincos", "Alianças", "Diamantes"],
+      links: ["Anéis", "Correntes e Gargantilhas", "Pulseiras", "Brincos", "Alianças", "Diamantes"],
     },
     {
       title: "Atendimento",
