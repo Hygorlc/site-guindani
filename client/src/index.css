@@ -210,6 +210,7 @@
   header.sticky > .container > .flex > a:first-child img {
     height: 6.1rem;
     max-width: 290px;
+    transform: translateY(12px);
   }
   header.sticky > .container > .flex > nav {
     order: 2;
@@ -241,6 +242,7 @@
     header.sticky > .container > .flex > a:first-child img {
       height: 5.25rem;
       max-width: 235px;
+      transform: translateY(8px);
     }
     header.sticky > .container > .flex > button {
       right: 1rem;
