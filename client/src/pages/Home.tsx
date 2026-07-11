@@ -161,7 +161,6 @@ function Header({
   const navItems = [
     { label: "Sobre Nós", href: "#sobre" },
     { label: "Categorias", href: "#categorias" },
-    { label: "Serviços", href: "#servicos" },
     { label: "Contato", href: "#contato" },
   ];
 
@@ -1164,7 +1163,6 @@ export default function Home() {
         <HeroSlider />
         <CategoriesSection activeTab={activeTab} onTabChange={setActiveTab} />
         <AboutSection />
-        <ServicesSection />
         <ContactSection />
       </main>
       <Footer />
