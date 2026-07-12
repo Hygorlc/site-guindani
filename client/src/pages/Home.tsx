@@ -18,8 +18,13 @@ const CATEGORIES = [
     img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_aneis-g6qDG8EcPAudu7dNYXPBZ7.webp",
   },
   {
-    id: "colares",
-    label: "Correntes e Gargantilhas",
+    id: "correntes",
+    label: "Correntes",
+    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_colares-VW5iJZU9KWjfKrAJZMcrUr.webp",
+  },
+  {
+    id: "gargantilhas",
+    label: "Gargantilhas",
     img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_colares-VW5iJZU9KWjfKrAJZMcrUr.webp",
   },
   {
@@ -31,11 +36,6 @@ const CATEGORIES = [
     id: "diamantes",
     label: "Diamantes",
     img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_diamantes-X9eM8UHAZKjc3e7NSRnM4P.webp",
-  },
-  {
-    id: "aliancas",
-    label: "Alianças",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_aliancas-4kyDHNgN3dgy7EjqvarzUs.webp",
   },
   {
     id: "brincos",
@@ -116,7 +116,7 @@ const SERVICES = [
   },
 ];
 
-const TABS = ["Todos", "Anéis", "Correntes e Gargantilhas", "Pulseiras", "Brincos", "Alianças"];
+const TABS = ["Todos", "Anéis", "Correntes", "Gargantilhas", "Pulseiras", "Brincos"];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function useFadeInSections() {
@@ -945,7 +945,7 @@ function Footer() {
     },
     {
       title: "Categorias",
-      links: ["Anéis", "Correntes e Gargantilhas", "Pulseiras", "Brincos", "Alianças", "Diamantes"],
+      links: ["Anéis", "Correntes", "Gargantilhas", "Pulseiras", "Brincos", "Diamantes"],
     },
     {
       title: "Atendimento",
