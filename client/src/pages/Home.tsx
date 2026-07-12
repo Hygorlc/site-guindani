@@ -560,47 +560,28 @@ function AboutSection() {
             </a>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-6">
-            {[
-              { number: "+500", label: "Peças Exclusivas" },
-              { number: "18K", label: "Ouro Certificado" },
-              { number: "100%", label: "Garantia de Qualidade" },
-              { number: "+10", label: "Anos de Experiência" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="text-center p-6"
-                style={{
-                  border: "1px solid rgba(201,169,110,0.3)",
-                  borderRadius: "2px",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    color: "#C9A96E",
-                    marginBottom: "0.25rem",
-                  }}
-                >
-                  {stat.number}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontSize: "0.72rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+          <div
+            style={{
+              border: "1px solid rgba(201,169,110,0.35)",
+              borderRadius: "2px",
+              padding: "0.5rem",
+              background: "rgba(255,255,255,0.04)",
+              boxShadow: "0 18px 40px rgba(0,0,0,0.28)",
+            }}
+          >
+            <img
+              src="/images/guindani-nossa-historia.jpg"
+              alt="Processo criativo e artesanal da Guindani"
+              style={{
+                width: "100%",
+                height: "100%",
+                maxHeight: "520px",
+                objectFit: "cover",
+                objectPosition: "center",
+                display: "block",
+                borderRadius: "2px",
+              }}
+            />
           </div>
         </div>
       </div>
