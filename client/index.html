@@ -41,8 +41,8 @@
           const header = document.querySelector("header");
           if (!header) return;
 
-          header.style.background = "rgba(12, 10, 8, 0.72)";
-          header.style.backdropFilter = "blur(10px)";
+          header.style.background = "#ffffff";
+          header.style.backdropFilter = "none";
           header.style.boxShadow = "0 1px 0 rgba(201,169,110,0.32)";
           header.style.minHeight = "0";
           header.style.left = "0";
@@ -54,7 +54,7 @@
           if (container) {
             container.style.width = "100%";
             container.style.maxWidth = "none";
-            container.style.paddingTop = "1px";
+            container.style.paddingTop = "10px";
             container.style.paddingRight = "0";
             container.style.paddingBottom = "1px";
             container.style.paddingLeft = "0";
@@ -70,7 +70,7 @@
 
           const logo = header.querySelector("a[href='#'] img[alt='Guindani']");
           if (logo) {
-            logo.style.maxHeight = "34px";
+            logo.style.maxHeight = "56px";
             logo.style.width = "auto";
             logo.style.objectFit = "contain";
           }
@@ -86,17 +86,17 @@
             nav.style.maxWidth = "none";
             nav.style.justifyContent = "center";
             nav.style.gap = "clamp(16px, 4vw, 44px)";
-            nav.style.padding = "3px 12px";
-            nav.style.background = "rgba(201, 169, 110, 0.18)";
-            nav.style.borderTop = "1px solid rgba(201, 169, 110, 0.28)";
-            nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.18)";
+            nav.style.padding = "12px 12px";
+            nav.style.background = "#ffffff";
+            nav.style.borderTop = "none";
+            nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.35)";
             nav.style.borderRadius = "0";
             nav.style.marginTop = "0";
           }
 
           header.querySelectorAll("nav a").forEach((link) => {
-            link.style.color = "#F4E7C8";
-            link.style.fontSize = "0.66rem";
+            link.style.color = "#6f6f6f";
+            link.style.fontSize = "0.72rem";
             link.style.letterSpacing = "0.13em";
             link.style.fontWeight = "700";
           });
