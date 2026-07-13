@@ -687,6 +687,24 @@ function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Envia a mensagem por e-mail via Netlify Forms
+    const encode = (data: Record<string, string>) =>
+      Object.entries(data)
+        .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+        .join("&");
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encode({
+        "form-name": "contato",
+        name: form.name,
+        email: form.email,
+        message: form.message,
+      }),
+    }).catch(() => {});
+
+    // Abre o WhatsApp com a mensagem
     const msg = encodeURIComponent(
       `Olá! Me chamo ${form.name}.\n\n${form.message}\n\nEmail: ${form.email}`
     );
