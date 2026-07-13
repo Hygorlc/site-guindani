@@ -688,19 +688,17 @@ function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Envia a mensagem por e-mail via Netlify Forms
-    const encode = (data: Record<string, string>) =>
-      Object.entries(data)
-        .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
-        .join("&");
-    fetch("/", {
+    // Envia a mensagem por e-mail direto do navegador (FormSubmit, sem servidor)
+    fetch("https://formsubmit.co/ajax/comercial@guindani.com.br", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({
-        "form-name": "contato",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
         name: form.name,
         email: form.email,
         message: form.message,
+        _subject: "Nova mensagem pelo site Guindani",
+        _template: "table",
+        _captcha: "false",
       }),
     }).catch(() => {});
 
