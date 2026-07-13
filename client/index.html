@@ -45,15 +45,24 @@
           header.style.backdropFilter = "blur(10px)";
           header.style.boxShadow = "0 1px 0 rgba(201,169,110,0.32)";
           header.style.minHeight = "0";
+          header.style.left = "0";
+          header.style.right = "0";
+          header.style.width = "100%";
+          header.style.maxWidth = "none";
 
           const container = header.querySelector(".container");
           if (container) {
+            container.style.width = "100%";
+            container.style.maxWidth = "none";
             container.style.paddingTop = "8px";
+            container.style.paddingRight = "0";
             container.style.paddingBottom = "8px";
+            container.style.paddingLeft = "0";
           }
 
           const row = header.querySelector(".flex.items-center.justify-between");
           if (row) {
+            row.style.width = "100%";
             row.style.flexDirection = "column";
             row.style.justifyContent = "center";
             row.style.gap = "6px";
@@ -74,12 +83,14 @@
           const nav = header.querySelector("nav");
           if (nav) {
             nav.style.width = "100%";
+            nav.style.maxWidth = "none";
             nav.style.justifyContent = "center";
             nav.style.gap = "clamp(18px, 5vw, 54px)";
             nav.style.padding = "7px 14px";
             nav.style.background = "rgba(201, 169, 110, 0.18)";
             nav.style.borderTop = "1px solid rgba(201, 169, 110, 0.28)";
             nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.18)";
+            nav.style.borderRadius = "0";
             nav.style.marginTop = "2px";
           }
 
