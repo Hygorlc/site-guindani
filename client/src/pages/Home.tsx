@@ -569,9 +569,13 @@ function AboutSection() {
               boxShadow: "0 18px 40px rgba(0,0,0,0.28)",
             }}
           >
-            <img
-              src="/images/guindani-nossa-historia.jpg"
-              alt="Processo criativo e artesanal da Guindani"
+            <video
+              src="/images/nossa-historia.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label="Processo criativo e artesanal da Guindani"
               style={{
                 width: "100%",
                 height: "100%",
