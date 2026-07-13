@@ -354,7 +354,7 @@ function HeroSlider() {
                   <h1
                     style={{
                       fontFamily: "'Playfair Display', serif",
-                      fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                      fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)",
                       fontWeight: 700,
                       color: "white",
                       lineHeight: 1.15,
@@ -366,7 +366,7 @@ function HeroSlider() {
                   <p
                     style={{
                       fontFamily: "'Lato', sans-serif",
-                      fontSize: "1.05rem",
+                      fontSize: "0.95rem",
                       fontWeight: 300,
                       color: "rgba(255,255,255,0.85)",
                       marginBottom: "2rem",
