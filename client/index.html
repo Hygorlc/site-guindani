@@ -54,9 +54,9 @@
           if (container) {
             container.style.width = "100%";
             container.style.maxWidth = "none";
-            container.style.paddingTop = "4px";
+            container.style.paddingTop = "1px";
             container.style.paddingRight = "0";
-            container.style.paddingBottom = "4px";
+            container.style.paddingBottom = "1px";
             container.style.paddingLeft = "0";
           }
 
@@ -65,12 +65,12 @@
             row.style.width = "100%";
             row.style.flexDirection = "column";
             row.style.justifyContent = "center";
-            row.style.gap = "3px";
+            row.style.gap = "1px";
           }
 
           const logo = header.querySelector("a[href='#'] img[alt='Guindani']");
           if (logo) {
-            logo.style.maxHeight = "44px";
+            logo.style.maxHeight = "34px";
             logo.style.width = "auto";
             logo.style.objectFit = "contain";
           }
@@ -85,8 +85,8 @@
             nav.style.width = "100%";
             nav.style.maxWidth = "none";
             nav.style.justifyContent = "center";
-            nav.style.gap = "clamp(18px, 5vw, 54px)";
-            nav.style.padding = "5px 14px";
+            nav.style.gap = "clamp(16px, 4vw, 44px)";
+            nav.style.padding = "3px 12px";
             nav.style.background = "rgba(201, 169, 110, 0.18)";
             nav.style.borderTop = "1px solid rgba(201, 169, 110, 0.28)";
             nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.18)";
@@ -96,8 +96,8 @@
 
           header.querySelectorAll("nav a").forEach((link) => {
             link.style.color = "#F4E7C8";
-            link.style.fontSize = "0.7rem";
-            link.style.letterSpacing = "0.14em";
+            link.style.fontSize = "0.66rem";
+            link.style.letterSpacing = "0.13em";
             link.style.fontWeight = "700";
           });
         };
