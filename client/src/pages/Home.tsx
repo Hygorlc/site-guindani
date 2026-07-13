@@ -174,13 +174,13 @@ function Header({
       }}
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-3 group">
             <img
               src={LOGO_URL}
               alt="Guindani"
-              className="h-16 w-auto max-w-[190px] object-contain"
+              className="w-auto object-contain"
             />
           </a>
 
