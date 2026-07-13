@@ -37,6 +37,60 @@
           }
         };
 
+        const styleHeader = () => {
+          const header = document.querySelector("header");
+          if (!header) return;
+
+          header.style.background = "rgba(12, 10, 8, 0.72)";
+          header.style.backdropFilter = "blur(10px)";
+          header.style.boxShadow = "0 1px 0 rgba(201,169,110,0.32)";
+          header.style.minHeight = "0";
+
+          const container = header.querySelector(".container");
+          if (container) {
+            container.style.paddingTop = "8px";
+            container.style.paddingBottom = "8px";
+          }
+
+          const row = header.querySelector(".flex.items-center.justify-between");
+          if (row) {
+            row.style.flexDirection = "column";
+            row.style.justifyContent = "center";
+            row.style.gap = "6px";
+          }
+
+          const logo = header.querySelector("a[href='#'] img[alt='Guindani']");
+          if (logo) {
+            logo.style.maxHeight = "54px";
+            logo.style.width = "auto";
+            logo.style.objectFit = "contain";
+          }
+
+          const logoLink = header.querySelector("a[href='#']");
+          if (logoLink) {
+            logoLink.style.justifyContent = "center";
+          }
+
+          const nav = header.querySelector("nav");
+          if (nav) {
+            nav.style.width = "100%";
+            nav.style.justifyContent = "center";
+            nav.style.gap = "clamp(18px, 5vw, 54px)";
+            nav.style.padding = "7px 14px";
+            nav.style.background = "rgba(201, 169, 110, 0.18)";
+            nav.style.borderTop = "1px solid rgba(201, 169, 110, 0.28)";
+            nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.18)";
+            nav.style.marginTop = "2px";
+          }
+
+          header.querySelectorAll("nav a").forEach((link) => {
+            link.style.color = "#F4E7C8";
+            link.style.fontSize = "0.72rem";
+            link.style.letterSpacing = "0.14em";
+            link.style.fontWeight = "700";
+          });
+        };
+
         const styleHistoryTitle = () => {
           document.querySelectorAll("h1, h2, h3").forEach((heading) => {
             const text = heading.textContent?.toUpperCase() ?? "";
@@ -87,6 +141,7 @@
 
         const refreshText = () => {
           updateVisibleText();
+          styleHeader();
           styleHistoryTitle();
           styleCategoryImages();
           styleFooterLogo();
