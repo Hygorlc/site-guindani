@@ -586,7 +586,7 @@ function AboutSection() {
             </p>
             <h2
               style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "'Cinzel', serif",
                 fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
                 fontWeight: 700,
                 color: "white",
