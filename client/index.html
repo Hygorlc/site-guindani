@@ -23,14 +23,16 @@
           "FAQ",
         ]);
 
-        const replaceDiamantes = () => {
+        const updateVisibleText = () => {
           const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
           let node = walker.nextNode();
 
           while (node) {
             node.nodeValue = node.nodeValue
               ?.replace(/Diamantes/g, "Pingentes")
-              .replace(/diamantes/g, "pingentes") ?? "";
+              .replace(/diamantes/g, "pingentes")
+              .replace(/comercial@gmail\.com\.br/g, "comercial@guindani.com.br")
+              .replace(/Seg a Sex: 08:30 às 17:30 \| Sáb: 9h às 13h/g, "Segunda-feira a sexta-feira das 8:30 às 17:30") ?? "";
             node = walker.nextNode();
           }
         };
@@ -56,7 +58,7 @@
         };
 
         const refreshText = () => {
-          replaceDiamantes();
+          updateVisibleText();
           cleanFooter();
         };
 
