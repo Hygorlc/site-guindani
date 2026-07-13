@@ -411,10 +411,15 @@ function HeroSlider() {
 function CategoriesSection({
   activeTab,
   onTabChange,
+  unlocked,
+  onGate,
 }: {
   activeTab: string;
   onTabChange: (t: string) => void;
+  unlocked: boolean;
+  onGate: () => void;
 }) {
+  const [zoomCat, setZoomCat] = useState<{ img: string; label: string } | null>(null);
   const filtered =
     activeTab === "Todos"
       ? CATEGORIES
@@ -474,20 +479,80 @@ function CategoriesSection({
             <div
               key={cat.id}
               className="category-card"
-              style={{ aspectRatio: "4/3", borderRadius: "2px" }}
+              style={{ aspectRatio: "4/3", borderRadius: "2px", cursor: "pointer" }}
+              onClick={() => (unlocked ? setZoomCat(cat) : onGate())}
             >
-              <img src={cat.img} alt={cat.label} />
+              <img
+                src={cat.img}
+                alt={cat.label}
+                style={{ filter: unlocked ? "none" : "blur(14px)", transition: "filter 0.4s ease" }}
+              />
               <div className="overlay" />
+              {!unlocked && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    color: "white",
+                    zIndex: 2,
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} style={{ width: "26px", height: "26px" }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                  <span style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                    Cadastre-se para ver
+                  </span>
+                </div>
+              )}
               <div className="label">{cat.label}</div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-10">
-          <a href="#contato" className="btn-dark">
-            Ver Catálogo
-          </a>
+          <button
+            type="button"
+            className="btn-dark"
+            style={{ cursor: "pointer", border: "none" }}
+            onClick={() => !unlocked && onGate()}
+          >
+            {unlocked ? "Catálogo Liberado" : "Ver Catálogo"}
+          </button>
         </div>
+
+        {zoomCat && (
+          <div
+            onClick={() => setZoomCat(null)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.85)",
+              zIndex: 10000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "2rem",
+              cursor: "zoom-out",
+            }}
+          >
+            <div style={{ maxWidth: "820px", width: "100%", textAlign: "center" }}>
+              <img
+                src={zoomCat.img}
+                alt={zoomCat.label}
+                style={{ width: "100%", maxHeight: "78vh", objectFit: "contain", borderRadius: "2px" }}
+              />
+              <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.4rem", color: "white", marginTop: "1rem" }}>
+                {zoomCat.label}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -1184,9 +1249,175 @@ function WhatsAppButton() {
   );
 }
 
+function CatalogGateModal({
+  open,
+  onClose,
+  onUnlock,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onUnlock: () => void;
+}) {
+  const [data, setData] = useState({ name: "", email: "", phone: "", cnpj: "" });
+  const [sending, setSending] = useState(false);
+
+  if (!open) return null;
+
+  const handle = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+
+    // Envia o cadastro por e-mail (FormSubmit, sem servidor)
+    fetch("https://formsubmit.co/ajax/comercial@guindani.com.br", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        nome: data.name,
+        email: data.email,
+        telefone: data.phone,
+        cnpj: data.cnpj,
+        _subject: "Novo cadastro para acesso ao catálogo Guindani",
+        _template: "table",
+        _captcha: "false",
+      }),
+    }).catch(() => {});
+
+    localStorage.setItem("guindani_catalogo_liberado", "1");
+    onUnlock();
+    setSending(false);
+    onClose();
+  };
+
+  const fields = [
+    { key: "name", label: "Nome", type: "text", placeholder: "Nome completo" },
+    { key: "email", label: "E-mail", type: "email", placeholder: "seu@email.com" },
+    { key: "phone", label: "Telefone", type: "tel", placeholder: "(51) 99999-9999" },
+    { key: "cnpj", label: "CNPJ", type: "text", placeholder: "00.000.000/0000-00" },
+  ];
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.7)",
+        zIndex: 10000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
+      }}
+    >
+      <form
+        onSubmit={handle}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "white",
+          borderRadius: "2px",
+          padding: "2rem",
+          width: "100%",
+          maxWidth: "420px",
+          borderTop: "3px solid #C9A96E",
+          maxHeight: "92vh",
+          overflowY: "auto",
+        }}
+      >
+        <h3
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "1.35rem",
+            fontWeight: 700,
+            color: "#1A1A1A",
+            marginBottom: "0.4rem",
+          }}
+        >
+          Acesse nosso catálogo
+        </h3>
+        <p
+          style={{
+            fontFamily: "'Lato', sans-serif",
+            fontSize: "0.85rem",
+            color: "#666",
+            marginBottom: "1.25rem",
+            lineHeight: 1.6,
+          }}
+        >
+          Preencha seus dados para liberar as imagens e categorias.
+        </p>
+        {fields.map((f) => (
+          <div key={f.key} style={{ marginBottom: "0.9rem" }}>
+            <label
+              style={{
+                fontFamily: "'Lato', sans-serif",
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "#666",
+                display: "block",
+                marginBottom: "0.3rem",
+              }}
+            >
+              {f.label}
+            </label>
+            <input
+              type={f.type}
+              required
+              placeholder={f.placeholder}
+              value={(data as Record<string, string>)[f.key]}
+              onChange={(e) => setData({ ...data, [f.key]: e.target.value })}
+              style={{
+                width: "100%",
+                padding: "0.6rem 0.85rem",
+                border: "1px solid #d4c4a8",
+                borderRadius: "2px",
+                fontFamily: "'Lato', sans-serif",
+                fontSize: "0.9rem",
+                color: "#1A1A1A",
+                background: "white",
+                outline: "none",
+              }}
+            />
+          </div>
+        ))}
+        <button type="submit" className="btn-gold w-full text-center" disabled={sending} style={{ cursor: "pointer" }}>
+          {sending ? "Enviando..." : "Liberar Catálogo"}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            display: "block",
+            margin: "0.9rem auto 0",
+            background: "none",
+            border: "none",
+            color: "#999",
+            fontFamily: "'Lato', sans-serif",
+            fontSize: "0.8rem",
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+        >
+          Agora não
+        </button>
+      </form>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Todos");
+  const [unlocked, setUnlocked] = useState(false);
+  const [gateOpen, setGateOpen] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("guindani_catalogo_liberado") === "1") {
+      setUnlocked(true);
+    }
+  }, []);
+
   useFadeInSections();
 
   return (
@@ -1195,10 +1426,20 @@ export default function Home() {
       <Header activeTab={activeTab} onTabChange={setActiveTab} />
       <main>
         <HeroSlider />
-        <CategoriesSection activeTab={activeTab} onTabChange={setActiveTab} />
+        <CategoriesSection
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          unlocked={unlocked}
+          onGate={() => setGateOpen(true)}
+        />
         <AboutSection />
         <ContactSection />
       </main>
+      <CatalogGateModal
+        open={gateOpen}
+        onClose={() => setGateOpen(false)}
+        onUnlock={() => setUnlocked(true)}
+      />
       <Footer />
       <WhatsAppButton />
     </div>
