@@ -42,6 +42,17 @@
               link.closest("li")?.remove();
             }
           });
+
+          document.querySelectorAll("footer p").forEach((paragraph) => {
+            const text = paragraph.textContent?.trim() ?? "";
+            if (
+              text.includes("Joalheria de luxo com peças exclusivas") &&
+              text.includes("ouro 18k") &&
+              text.includes("prata 925")
+            ) {
+              paragraph.remove();
+            }
+          });
         };
 
         const refreshText = () => {
