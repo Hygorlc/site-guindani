@@ -37,6 +37,15 @@
           }
         };
 
+        const styleFooterLogo = () => {
+          document.querySelectorAll("footer img[alt='Guindani']").forEach((logo) => {
+            logo.style.width = "112px";
+            logo.style.height = "112px";
+            logo.style.maxWidth = "112px";
+            logo.style.objectFit = "contain";
+          });
+        };
+
         const cleanFooter = () => {
           document.querySelectorAll("footer a").forEach((link) => {
             const label = link.textContent?.trim();
@@ -59,6 +68,7 @@
 
         const refreshText = () => {
           updateVisibleText();
+          styleFooterLogo();
           cleanFooter();
         };
 
