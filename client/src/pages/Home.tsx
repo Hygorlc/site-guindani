@@ -529,7 +529,7 @@ function AboutSection() {
                 marginBottom: "1.5rem",
               }}
             >
-              “Trabalhar com Seriedade e Qualidade”
+              "TRABALHAR COM SERIEDADE E QUALIDADE"
             </h2>
             <p
               style={{
@@ -541,7 +541,19 @@ function AboutSection() {
                 marginBottom: "1.25rem",
               }}
             >
-              Esse foi o lema que orientou a família Guindani desde o momento em que a empresa era apenas um ideal, há mais de 80 anos. Tudo teve início pelas mãos de Achyles Guindani, que soube transmitir a seus filhos o ofício de ourives.
+              Esse foi o lema que orientou a família Guindani, desde o momento que a empresa era apenas um ideal, há mais de 80 anos.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Lato', sans-serif",
+                fontSize: "1rem",
+                fontWeight: 300,
+                color: "rgba(255,255,255,0.75)",
+                lineHeight: 1.8,
+                marginBottom: "1.25rem",
+              }}
+            >
+              Tudo teve início pelas mãos de Achyles Guindani, que soube transmitir a seus filhos, afora o ofício de ourives.
             </p>
             <p
               style={{
@@ -574,14 +586,11 @@ function AboutSection() {
                 fontWeight: 300,
                 color: "rgba(255,255,255,0.75)",
                 lineHeight: 1.8,
-                marginBottom: "2rem",
+                marginBottom: "0",
               }}
             >
-              Hoje, a Guindani é uma das mais respeitadas indústrias de joias do Brasil, com um quadro de colaboradores consolidado, fazendo jus ao lema “Qualidade e Seriedade”!
+              Hoje, a Guindani é uma das mais respeitadas indústrias de joias do Brasil, com um quadro de colaboradores consolidado e fazendo jus ao lema "Qualidade e Seriedade"!
             </p>
-            <a href="#contato" className="btn-gold">
-              Saiba Mais
-            </a>
           </div>
 
           <div
