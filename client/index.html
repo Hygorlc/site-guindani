@@ -13,6 +13,34 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (() => {
+        const hiddenFooterLinks = new Set([
+          "Certificações",
+          "Sustentabilidade",
+          "Política de Troca",
+          "Garantia",
+          "FAQ",
+        ]);
+
+        const cleanFooter = () => {
+          document.querySelectorAll("footer a").forEach((link) => {
+            const label = link.textContent?.trim();
+            if (label && hiddenFooterLinks.has(label)) {
+              link.closest("li")?.remove();
+            }
+          });
+        };
+
+        const root = document.getElementById("root");
+        if (root) {
+          new MutationObserver(cleanFooter).observe(root, { childList: true, subtree: true });
+        }
+
+        window.addEventListener("load", cleanFooter);
+        cleanFooter();
+      })();
+    </script>
     <script
       defer
       src="%VITE_ANALYTICS_ENDPOINT%/umami"
