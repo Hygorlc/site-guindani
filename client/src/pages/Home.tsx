@@ -191,7 +191,6 @@ function Header({
                 key={item.label}
                 href={item.href}
                 className="nav-link"
-                style={{ color: "white" }}
               >
                 {item.label}
               </a>
@@ -206,15 +205,15 @@ function Header({
           >
             <div className="w-6 flex flex-col gap-1.5">
               <span
-                className="block h-0.5 bg-white transition-all duration-300"
+                className="block h-0.5 bg-neutral-800 transition-all duration-300"
                 style={{ transform: menuOpen ? "rotate(45deg) translateY(8px)" : "none" }}
               />
               <span
-                className="block h-0.5 bg-white transition-all duration-300"
+                className="block h-0.5 bg-neutral-800 transition-all duration-300"
                 style={{ opacity: menuOpen ? 0 : 1 }}
               />
               <span
-                className="block h-0.5 bg-white transition-all duration-300"
+                className="block h-0.5 bg-neutral-800 transition-all duration-300"
                 style={{ transform: menuOpen ? "rotate(-45deg) translateY(-8px)" : "none" }}
               />
             </div>
@@ -226,20 +225,19 @@ function Header({
           className="md:hidden overflow-hidden transition-all duration-300"
           style={{
             maxHeight: menuOpen ? "400px" : "0",
-            background: "rgba(10,10,10,0.72)",
+            background: "rgba(255,255,255,0.97)",
             backdropFilter: "blur(10px)",
           }}
         >
           <nav
             className="flex flex-col py-4 gap-4 border-t"
-            style={{ borderColor: "rgba(255,255,255,0.16)" }}
+            style={{ borderColor: "rgba(0,0,0,0.08)" }}
           >
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 className="nav-link"
-                style={{ color: "white" }}
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}
