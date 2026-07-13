@@ -529,7 +529,7 @@ function AboutSection() {
                 marginBottom: "1.5rem",
               }}
             >
-              Tradição e Excelência em Joalheria
+              “Trabalhar com Seriedade e Qualidade”
             </h2>
             <p
               style={{
@@ -541,7 +541,31 @@ function AboutSection() {
                 marginBottom: "1.25rem",
               }}
             >
-              A Guindani nasceu da paixão por criar peças que contam histórias. Cada joia é cuidadosamente selecionada e trabalhada por artesãos especializados, garantindo qualidade e beleza incomparáveis.
+              Esse foi o lema que orientou a família Guindani desde o momento em que a empresa era apenas um ideal, há mais de 80 anos. Tudo teve início pelas mãos de Achyles Guindani, que soube transmitir a seus filhos o ofício de ourives.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Lato', sans-serif",
+                fontSize: "1rem",
+                fontWeight: 300,
+                color: "rgba(255,255,255,0.75)",
+                lineHeight: 1.8,
+                marginBottom: "1.25rem",
+              }}
+            >
+              Em 08 de janeiro de 1946, no porão da casa de Achyles, seu filho Sauro iniciava as atividades de uma pequena fábrica de joias, acompanhado posteriormente de seus irmãos Clemente, Ary e Cypriano, além de outros colaboradores.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Lato', sans-serif",
+                fontSize: "1rem",
+                fontWeight: 300,
+                color: "rgba(255,255,255,0.75)",
+                lineHeight: 1.8,
+                marginBottom: "1.25rem",
+              }}
+            >
+              Na época de sua criação, a sede da empresa, Cotiporã, era uma pequena vila fundada por imigrantes italianos, distante dos grandes centros comerciais e industriais.
             </p>
             <p
               style={{
@@ -553,7 +577,7 @@ function AboutSection() {
                 marginBottom: "2rem",
               }}
             >
-              Trabalhamos com ouro 18k, prata 925 e diamantes certificados, oferecendo peças únicas para os momentos mais especiais da sua vida.
+              Hoje, a Guindani é uma das mais respeitadas indústrias de joias do Brasil, com um quadro de colaboradores consolidado, fazendo jus ao lema “Qualidade e Seriedade”!
             </p>
             <a href="#contato" className="btn-gold">
               Saiba Mais
