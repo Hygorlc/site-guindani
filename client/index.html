@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Guindani — Joalheria de Luxo</title>
-    <meta name="description" content="Guindani — Joalheria de luxo com anéis, colares, pulseiras, brincos, diamantes e alianças. Qualidade e elegância para momentos especiais." />
+    <meta name="description" content="Guindani — Joalheria de luxo com anéis, colares, pulseiras, brincos, pingentes e alianças. Qualidade e elegância para momentos especiais." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -23,6 +23,18 @@
           "FAQ",
         ]);
 
+        const replaceDiamantes = () => {
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+          let node = walker.nextNode();
+
+          while (node) {
+            node.nodeValue = node.nodeValue
+              ?.replace(/Diamantes/g, "Pingentes")
+              .replace(/diamantes/g, "pingentes") ?? "";
+            node = walker.nextNode();
+          }
+        };
+
         const cleanFooter = () => {
           document.querySelectorAll("footer a").forEach((link) => {
             const label = link.textContent?.trim();
@@ -32,13 +44,18 @@
           });
         };
 
+        const refreshText = () => {
+          replaceDiamantes();
+          cleanFooter();
+        };
+
         const root = document.getElementById("root");
         if (root) {
-          new MutationObserver(cleanFooter).observe(root, { childList: true, subtree: true });
+          new MutationObserver(refreshText).observe(root, { childList: true, subtree: true });
         }
 
-        window.addEventListener("load", cleanFooter);
-        cleanFooter();
+        window.addEventListener("load", refreshText);
+        refreshText();
       })();
     </script>
     <script
