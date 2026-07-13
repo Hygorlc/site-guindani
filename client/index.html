@@ -7,7 +7,7 @@
     <meta name="description" content="Guindani — Joalheria de luxo com anéis, colares, pulseiras, brincos, pingentes e alianças. Qualidade e elegância para momentos especiais." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/jpeg" href="/manus-storage/LOGOGUINDANIFUNDOBRANCO_5cf9cbef.jpeg" />
   </head>
   <body>
@@ -35,6 +35,18 @@
               .replace(/Seg a Sex: 08:30 às 17:30 \| Sáb: 9h às 13h/g, "Segunda-feira a sexta-feira das 8:30 às 17:30") ?? "";
             node = walker.nextNode();
           }
+        };
+
+        const styleHistoryTitle = () => {
+          document.querySelectorAll("h1, h2, h3").forEach((heading) => {
+            const text = heading.textContent?.toUpperCase() ?? "";
+            if (text.includes("TRABALHAR COM SERIEDADE E QUALIDADE")) {
+              heading.style.fontFamily = "'Cormorant Garamond', serif";
+              heading.style.fontWeight = "600";
+              heading.style.letterSpacing = "0.02em";
+              heading.style.textTransform = "uppercase";
+            }
+          });
         };
 
         const styleFooterLogo = () => {
@@ -68,6 +80,7 @@
 
         const refreshText = () => {
           updateVisibleText();
+          styleHistoryTitle();
           styleFooterLogo();
           cleanFooter();
         };
