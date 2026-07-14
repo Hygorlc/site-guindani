@@ -41,7 +41,7 @@
           const header = document.querySelector("header");
           if (!header) return;
 
-          header.style.background = "#ffffff";
+          header.style.background = "transparent";
           header.style.backdropFilter = "none";
           header.style.boxShadow = "0 1px 0 rgba(201,169,110,0.32)";
           header.style.minHeight = "0";
@@ -78,6 +78,7 @@
           const logoLink = header.querySelector("a[href='#']");
           if (logoLink) {
             logoLink.style.justifyContent = "center";
+            logoLink.style.background = "#ffffff";
           }
 
           const nav = header.querySelector("nav");
@@ -87,7 +88,7 @@
             nav.style.justifyContent = "center";
             nav.style.gap = "clamp(16px, 4vw, 44px)";
             nav.style.padding = "12px 12px";
-            nav.style.background = "#ffffff";
+            nav.style.background = "transparent";
             nav.style.borderTop = "none";
             nav.style.borderBottom = "1px solid rgba(201, 169, 110, 0.35)";
             nav.style.borderRadius = "0";
@@ -95,7 +96,8 @@
           }
 
           header.querySelectorAll("nav a").forEach((link) => {
-            link.style.color = "#6f6f6f";
+            link.style.color = "#ffffff";
+            link.style.textShadow = "0 1px 6px rgba(0,0,0,0.45)";
             link.style.fontSize = "0.72rem";
             link.style.letterSpacing = "0.13em";
             link.style.fontWeight = "700";
