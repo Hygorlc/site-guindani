@@ -15,7 +15,7 @@ const CATEGORIES = [
   {
     id: "aneis",
     label: "Anéis",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_aneis-g6qDG8EcPAudu7dNYXPBZ7.webp",
+    img: "/images/category_aneis.jpg",
   },
   {
     id: "correntes",
