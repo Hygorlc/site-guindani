@@ -686,7 +686,7 @@ function AboutSection() {
             <TypewriterHeading
               text={'"TRABALHAR COM SERIEDADE E QUALIDADE"'}
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Oswald', sans-serif",
                 fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
                 fontWeight: 700,
                 color: "white",
