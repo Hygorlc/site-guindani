@@ -611,6 +611,52 @@ function CategoriesSection({
   );
 }
 
+function TypewriterHeading({
+  text,
+  style,
+}: {
+  text: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLHeadingElement | null>(null);
+  const [started, setStarted] = useState(false);
+  const [chars, setChars] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setStarted(true);
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!started || chars >= text.length) return;
+    const t = setTimeout(() => setChars((c) => c + 1), 55);
+    return () => clearTimeout(t);
+  }, [started, chars, text.length]);
+
+  return (
+    <h2 ref={ref} style={{ ...style, position: "relative" }}>
+      <span style={{ visibility: "hidden" }}>{text}</span>
+      <span style={{ position: "absolute", top: 0, left: 0, right: 0 }}>
+        {text.substring(0, chars)}
+        {started && chars < text.length && <span className="type-cursor">|</span>}
+      </span>
+    </h2>
+  );
+}
+
 function AboutSection() {
   return (
     <section
@@ -637,7 +683,8 @@ function AboutSection() {
             >
               Nossa História
             </p>
-            <h2
+            <TypewriterHeading
+              text={'"TRABALHAR COM SERIEDADE E QUALIDADE"'}
               style={{
                 fontFamily: "'Cinzel', serif",
                 fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
@@ -646,9 +693,7 @@ function AboutSection() {
                 lineHeight: 1.2,
                 marginBottom: "1.5rem",
               }}
-            >
-              "TRABALHAR COM SERIEDADE E QUALIDADE"
-            </h2>
+            />
             <p
               style={{
                 fontFamily: "'Lato', sans-serif",
