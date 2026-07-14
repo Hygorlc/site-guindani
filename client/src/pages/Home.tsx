@@ -142,21 +142,8 @@ function Topbar() {
   return null;
 }
 
-function Header({
-  activeTab,
-  onTabChange,
-}: {
-  activeTab: string;
-  onTabChange: (t: string) => void;
-}) {
+function Header({ onCatalog }: { onCatalog: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const navItems = [
     { label: "Sobre Nós", href: "#sobre" },
@@ -166,85 +153,153 @@ function Header({
 
   return (
     <header
-      className="sticky top-0 z-50 transition-all duration-300"
-      style={{
-        background: scrolled || menuOpen ? "rgba(10, 10, 10, 0.72)" : "rgba(0, 0, 0, 0.18)",
-        backdropFilter: "blur(10px)",
-        boxShadow: scrolled ? "0 8px 24px rgba(0,0,0,0.24)" : "0 1px 0 rgba(255,255,255,0.18)",
-      }}
+      className="sticky top-0 z-50"
+      style={{ background: "#ffffff", boxShadow: "0 1px 0 rgba(0,0,0,0.05)" }}
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <img
-              src={LOGO_URL}
-              alt="Guindani"
-              className="w-auto object-contain"
-            />
-          </a>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="nav-link"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Mobile menu toggle */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
-          >
-            <div className="w-6 flex flex-col gap-1.5">
-              <span
-                className="block h-0.5 bg-neutral-800 transition-all duration-300"
-                style={{ transform: menuOpen ? "rotate(45deg) translateY(8px)" : "none" }}
-              />
-              <span
-                className="block h-0.5 bg-neutral-800 transition-all duration-300"
-                style={{ opacity: menuOpen ? 0 : 1 }}
-              />
-              <span
-                className="block h-0.5 bg-neutral-800 transition-all duration-300"
-                style={{ transform: menuOpen ? "rotate(-45deg) translateY(-8px)" : "none" }}
-              />
-            </div>
-          </button>
-        </div>
-
-        {/* Mobile menu */}
-        <div
-          className="md:hidden overflow-hidden transition-all duration-300"
+      {/* Faixa superior: catálogo | logo | redes sociais */}
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px 16px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={onCatalog}
+          className="hidden md:flex"
           style={{
-            maxHeight: menuOpen ? "400px" : "0",
-            background: "rgba(255,255,255,0.97)",
-            backdropFilter: "blur(10px)",
+            position: "absolute",
+            left: "28px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            alignItems: "center",
+            gap: "8px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#555",
+            fontFamily: "'Lato', sans-serif",
+            fontSize: "0.78rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
           }}
         >
-          <nav
-            className="flex flex-col py-4 gap-4 border-t"
-            style={{ borderColor: "rgba(0,0,0,0.08)" }}
-          >
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="nav-link"
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: "15px", height: "15px" }}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          Catálogo Online
+        </button>
+
+        <a href="#">
+          <img
+            src={LOGO_URL}
+            alt="Guindani"
+            style={{ height: "64px", width: "auto", maxWidth: "220px", objectFit: "contain" }}
+          />
+        </a>
+
+        <div
+          className="hidden md:flex"
+          style={{
+            position: "absolute",
+            right: "28px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            alignItems: "center",
+            gap: "14px",
+          }}
+        >
+          <a href="#" aria-label="Facebook" style={{ color: "#555" }}>
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram" style={{ color: "#555" }}>
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+          </a>
         </div>
+
+        {/* Botão menu mobile */}
+        <button
+          className="md:hidden"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menu"
+          style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            background: "none",
+            border: "none",
+            padding: "8px",
+            cursor: "pointer",
+          }}
+        >
+          <div className="w-6 flex flex-col gap-1.5">
+            <span
+              className="block h-0.5 bg-neutral-800 transition-all duration-300"
+              style={{ transform: menuOpen ? "rotate(45deg) translateY(8px)" : "none" }}
+            />
+            <span
+              className="block h-0.5 bg-neutral-800 transition-all duration-300"
+              style={{ opacity: menuOpen ? 0 : 1 }}
+            />
+            <span
+              className="block h-0.5 bg-neutral-800 transition-all duration-300"
+              style={{ transform: menuOpen ? "rotate(-45deg) translateY(-8px)" : "none" }}
+            />
+          </div>
+        </button>
+      </div>
+
+      {/* Barra de menu */}
+      <nav
+        className="hidden md:flex"
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "clamp(24px, 5vw, 64px)",
+          padding: "13px 12px",
+          background: "linear-gradient(180deg, #f7f6f4 0%, #eceae6 100%)",
+          borderTop: "1px solid rgba(0,0,0,0.05)",
+          borderBottom: "1px solid rgba(0,0,0,0.07)",
+        }}
+      >
+        {navItems.map((item) => (
+          <a key={item.label} href={item.href} className="nav-link" style={{ color: "#6f6f6f" }}>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      {/* Menu mobile */}
+      <div
+        className="md:hidden overflow-hidden transition-all duration-300"
+        style={{ maxHeight: menuOpen ? "400px" : "0", background: "#ffffff" }}
+      >
+        <nav
+          className="flex flex-col py-4 gap-4 border-t"
+          style={{ borderColor: "rgba(0,0,0,0.08)", paddingLeft: "1.5rem" }}
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="nav-link"
+              style={{ color: "#6f6f6f" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
       </div>
     </header>
   );
@@ -1421,7 +1476,12 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Topbar />
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header
+        onCatalog={() => {
+          if (!unlocked) setGateOpen(true);
+          document.getElementById("categorias")?.scrollIntoView({ behavior: "smooth" });
+        }}
+      />
       <main>
         <HeroSlider />
         <CategoriesSection
