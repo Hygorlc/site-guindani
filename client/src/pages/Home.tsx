@@ -40,7 +40,7 @@ const CATEGORIES = [
   {
     id: "brincos",
     label: "Brincos",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_brincos-hHMESMkfUbZ4HtvSKR52vy.webp",
+    img: "/images/category_brincos.jpg",
   },
 ];
 
