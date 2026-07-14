@@ -177,87 +177,20 @@
     text-transform: uppercase;
   }
 
-  /* Header logo strip above nav */
-  header.sticky {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    box-shadow: none !important;
-  }
-  header.sticky > .container {
-    max-width: none;
-    padding-left: 0;
-    padding-right: 0;
-    position: relative;
-  }
-  header.sticky > .container > .flex {
-    height: 208px;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 0;
-    padding: 0;
-  }
-  header.sticky > .container > .flex > a:first-child {
-    order: 1;
-    width: 100%;
-    height: 138px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ffffff;
-    border-bottom: none;
-  }
-  header.sticky > .container > .flex > a:first-child img {
-    height: 6.1rem;
-    max-width: 290px;
-    transform: translateY(12px);
-  }
-  header.sticky > .container > .flex > nav {
-    order: 2;
-    width: 100%;
-    height: 70px;
-    justify-content: center;
-    background: #ffffff;
-    border-bottom: 1px solid rgba(201, 169, 110, 0.32);
-  }
-  header.sticky > .container > .flex > nav .nav-link {
-    color: #6f6f6f;
-  }
-  header.sticky > .container > .flex > nav .nav-link:hover {
-    color: #C9A96E;
-  }
-  header.sticky > .container > .flex > button {
-    position: absolute;
-    right: 1rem;
-    bottom: 1.15rem;
-  }
+  /* Primeira seção logo abaixo do cabeçalho (sem sobreposição) */
   main > section:first-child {
-    height: calc(100vh + 208px) !important;
-    margin-top: -208px !important;
-    padding-top: 208px !important;
+    height: 78vh !important;
+    min-height: 520px !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
+
   @media (max-width: 767px) {
-    header.sticky > .container > .flex {
-      height: 170px;
-      align-items: stretch;
-      justify-content: flex-start;
-    }
-    header.sticky > .container > .flex > a:first-child {
-      height: 112px;
-    }
-    header.sticky > .container > .flex > a:first-child img {
-      height: 5.25rem;
-      max-width: 235px;
-      transform: translateY(8px);
-    }
-    header.sticky > .container > .flex > button {
-      right: 1rem;
-      bottom: 1rem;
-    }
     main > section:first-child {
-      height: calc(100vh + 170px) !important;
-      margin-top: -170px !important;
-      padding-top: 170px !important;
+      height: 64vh !important;
+      min-height: 420px !important;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
     }
   }
 
