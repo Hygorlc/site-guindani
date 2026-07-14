@@ -30,7 +30,7 @@ const CATEGORIES = [
   {
     id: "pulseiras",
     label: "Pulseiras",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663787846659/aeFGMeyncKnfvU6NJgH559/category_pulseiras-VAHf9tRtpihZBw8sSgQp3L.webp",
+    img: "/images/category_pulseiras.jpg",
   },
   {
     id: "pingentes",
