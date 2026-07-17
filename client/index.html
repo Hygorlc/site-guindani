@@ -119,7 +119,9 @@
         };
 
         const styleCategoryImages = () => {
-          // capa de Gargantilhas agora vem do CATEGORIES em Home.tsx
+          document.querySelectorAll("img[alt='Pingentes']").forEach((image) => {
+            image.style.objectPosition = "center 82%";
+          });
         };
 
         const styleFooterLogo = () => {
