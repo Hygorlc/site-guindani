@@ -1,4 +1,4 @@
-import { getDb, parseCookies } from "./_db";
+import { getDb, parseCookies } from "./_db.js";
 export default async function handler(req: any, res: any) {
 if (req.method !== "GET") {
 res.setHeader("Allow", "GET");

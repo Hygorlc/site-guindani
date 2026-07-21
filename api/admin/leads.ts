@@ -1,5 +1,5 @@
-import { getDb, parseCookies } from "../_db";
-import { verifySession } from "../_auth";
+import { getDb, parseCookies } from "../_db.js";
+import { verifySession } from "../_auth.js";
 export default async function handler(req: any, res: any) {
 if (req.method !== "GET") {
 res.setHeader("Allow", "GET");
