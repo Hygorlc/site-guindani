@@ -465,11 +465,13 @@ function CategoriesSection({
   activeTab,
   onTabChange,
   unlocked,
+  pending,
   onGate,
 }: {
   activeTab: string;
   onTabChange: (t: string) => void;
   unlocked: boolean;
+  pending?: boolean;
   onGate: () => void;
 }) {
   const [zoomCat, setZoomCat] = useState<{ img: string; label: string } | null>(null);
@@ -533,7 +535,7 @@ function CategoriesSection({
               key={cat.id}
               className="category-card"
               style={{ aspectRatio: "4/3", borderRadius: "2px", cursor: "pointer" }}
-              onClick={() => (unlocked ? setZoomCat(cat) : onGate())}
+          onClick={() => (unlocked ? setZoomCat(cat) : pending ? undefined : onGate())}
             >
               <img
                 src={cat.img}
@@ -559,7 +561,7 @@ function CategoriesSection({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                   </svg>
                   <span style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                    Cadastre-se para ver
+                              {pending ? "Aguardando aprovação" : "Cadastre-se para ver"}
                   </span>
                 </div>
               )}
@@ -1364,28 +1366,30 @@ function CatalogGateModal({
   const handle = (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-
-    // Envia o cadastro por e-mail (FormSubmit, sem servidor)
     fetch("https://formsubmit.co/ajax/comercial@guindani.com.br", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        nome: data.name,
-        email: data.email,
-        telefone: data.phone,
-        cnpj: data.cnpj,
-        _subject: "Novo cadastro para acesso ao catálogo Guindani",
-        _template: "table",
-        _captcha: "false",
-      }),
-    }).catch(() => {});
-
-    localStorage.setItem("guindani_catalogo_liberado", "1");
-    onUnlock();
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+    nome: data.name,
+    email: data.email,
+    telefone: data.phone,
+    cnpj: data.cnpj,
+    _subject: "Novo cadastro para acesso ao catálogo Guindani",
+    _template: "table",
+    _captcha: "false",
+    }),
+    }).catch(function () {});
+    fetch("/api/leads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    }).catch(function () {}).finally(function () {
     setSending(false);
+    onUnlock();
     onClose();
-  };
-
+    });
+    };
+  
   const fields = [
     { key: "name", label: "Nome", type: "text", placeholder: "Nome completo" },
     { key: "email", label: "E-mail", type: "email", placeholder: "seu@email.com" },
@@ -1506,14 +1510,32 @@ function CatalogGateModal({
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("Todos");
-  const [unlocked, setUnlocked] = useState(false);
-  const [gateOpen, setGateOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("Todos");
+      const [unlocked, setUnlocked] = useState(false);
+        const [gateOpen, setGateOpen] = useState(false);
+          const [leadStatus, setLeadStatus] = useState("none");
 
-  useEffect(() => {
-    if (localStorage.getItem("guindani_catalogo_liberado") === "1") {
-      setUnlocked(true);
-    }
+useEffect(() => {
+  let active = true;
+  let interval = null;
+  async function checkLeadStatus() {
+  try {
+  const res = await fetch("/api/lead-status");
+  const json = await res.json();
+  if (!active) return;
+  setLeadStatus(json.status);
+  if (json.status === "approved") {
+  setUnlocked(true);
+  if (interval) clearInterval(interval);
+  }
+  } catch (err) {}
+  }
+  checkLeadStatus();
+  interval = setInterval(checkLeadStatus, 15000);
+  return function cleanup() {
+  active = false;
+  if (interval) clearInterval(interval);
+  };
   }, []);
 
   useFadeInSections();
@@ -1533,6 +1555,7 @@ export default function Home() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           unlocked={unlocked}
+          pending={leadStatus === "pending"}
           onGate={() => setGateOpen(true)}
         />
         <AboutSection />
@@ -1541,8 +1564,8 @@ export default function Home() {
       <CatalogGateModal
         open={gateOpen}
         onClose={() => setGateOpen(false)}
-        onUnlock={() => setUnlocked(true)}
-      />
+          onUnlock={() => setLeadStatus("pending")}      
+          />
       <Footer />
       <WhatsAppButton />
     </div>
