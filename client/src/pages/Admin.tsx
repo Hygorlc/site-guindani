@@ -193,18 +193,7 @@ return (
 <td style={{ padding: "10px" }}>{lead.phone}</td>
 <td style={{ padding: "10px" }}>{lead.cnpj}</td>
 <td style={{ padding: "10px" }}>{lead.status}</td>
-<td style={{ padding: "10px" }}>
-{lead.status !== "approved" ? (
-<button onClick={function () { handleDecision(lead.id, "approved"); }} style={{ marginRight: "8px", cursor: "pointer" }}>
-Aprovar
-</button>
-) : null}
-{lead.status !== "rejected" ? (
-<button onClick={function () { handleDecision(lead.id, "rejected"); }} style={{ cursor: "pointer" }}>
-Rejeitar
-</button>
-) : null}
-</td>
+<td style={{ padding: "10px" }}><div onClick={function () { handleDecision(lead.id, lead.status === "approved" ? "rejected" : "approved"); }} title={lead.status === "approved" ? "Aprovado (clique para desativar)" : "Nao aprovado (clique para ativar)"} style={{ width: "44px", height: "24px", borderRadius: "9999px", background: lead.status === "approved" ? "#C9A96E" : "#ccc", position: "relative", cursor: "pointer", display: "inline-block", transition: "background 0.2s" }}><div style={{ width: "18px", height: "18px", borderRadius: "9999px", background: "#fff", position: "absolute", top: "3px", left: lead.status === "approved" ? "23px" : "3px", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} /></div></td>
 </tr>
 );
 })}
