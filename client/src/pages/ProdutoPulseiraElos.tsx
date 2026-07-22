@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useState } from "react";
 
 const IMG_URL = "/images/pulseira-elos-geometricos-dourada.jpg";
 
@@ -18,6 +19,16 @@ const MATERIAIS = [
 ];
 
 export default function ProdutoPulseiraElos() {
+  const [zoomActive, setZoomActive] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+  function handleMouseMove(e: any) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPos({ x: x, y: y });
+  }
+
 return (
 <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "'Lato', sans-serif" }}>
 <div style={{ padding: "1.5rem" }}>
@@ -27,8 +38,37 @@ return (
 </Link>
 </div>
 <div style={{ maxWidth: "720px", margin: "0 auto", padding: "1rem 1.5rem 4rem" }}>
-<img src={IMG_URL} alt="Pulseira Elos Geométricos Dourada" style={{ width: "100%", maxWidth: "480px", margin: "0 auto 2rem", display: "block", borderRadius: "4px" }} />
-
+<div
+  onMouseEnter={() => setZoomActive(true)}
+    onMouseLeave={() => setZoomActive(false)}
+      onMouseMove={handleMouseMove}
+        style={{
+            width: "100%",
+                maxWidth: "480px",
+                    aspectRatio: "1 / 1",
+                        margin: "0 auto 2rem",
+                            overflow: "hidden",
+                                borderRadius: "4px",
+                                    cursor: "zoom-in",
+                                        position: "relative",
+                                          }}
+                                          >
+                                            <img
+                                                src={IMG_URL}
+                                                    alt="Pulseira Elos Geometricos Dourada"
+                                                        style={{
+                                                              width: "100%",
+                                                                    height: "100%",
+                                                                          objectFit: "cover",
+                                                                                objectPosition: "center 42%",
+                                                                                      display: "block",
+                                                                                            transform: zoomActive ? "scale(2.2)" : "scale(1)",
+                                                                                                  transformOrigin: zoomPos.x + "% " + zoomPos.y + "%",
+                                                                                                        transition: zoomActive ? "none" : "transform 0.25s ease-out",
+                                                                                                            }}
+                                                                                                              />
+                                                                                                              </div>
+                                                                                                              
 <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "#1A1A1A", marginBottom: "1rem" }}>
 Pulseira Elos Geométricos Dourada
 </h1>
