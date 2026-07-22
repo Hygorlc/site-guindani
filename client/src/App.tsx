@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
+import ProdutoPulseiraElos from "./pages/ProdutoPulseiraElos";
 
 /**
  * Guindani — App
@@ -18,6 +19,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
+      <Route path="/produto/pulseira-elos-geometricos" component={ProdutoPulseiraElos} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
