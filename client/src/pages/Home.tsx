@@ -53,6 +53,12 @@ const HERO_SLIDES = [
     cta: "Ver coleção",
   },
   {
+    img: "/images/convite-feninjer-2026.jpg",
+    title: "83ª Feninjer+",
+    subtitle: "17 a 20 de agosto de 2026 — Transamérica Expo Center",
+    cta: "Saiba mais",
+  },
+  {
     img: "/images/hero-2.jpg",
     title: "Brilho Contemporâneo",
     subtitle: "Peças com cristais que impõem presença",
