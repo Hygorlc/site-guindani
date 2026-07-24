@@ -7,8 +7,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GUINDANI_LOGO } from "../assets/guindani-logo";
-import { Link } from "wouter";
-
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO_URL =
   GUINDANI_LOGO;
@@ -31,7 +29,7 @@ const CATEGORIES = [
   {
     id: "pulseiras",
     label: "Pulseiras",
-    img: "/images/category_pulseiras.jpg",
+    img: "/images/pulseira-elos-geometricos-dourada.jpg",
   },
   {
     id: "pingentes",
@@ -1515,25 +1513,6 @@ function CatalogGateModal({
   );
 }
 
-function FeaturedProductSection() {
-return (
-<section style={{ padding: "1rem 0 3rem", background: "#FFFFFF" }}>
-<div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem" }}>
-<h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", color: "#1A1A1A", marginBottom: "1rem" }}>
-Peça em destaque
-</h3>
-<Link href="/produto/pulseira-elos-geometricos" style={{ display: "inline-flex", alignItems: "center", gap: "1rem", textDecoration: "none", color: "#1A1A1A", cursor: "pointer" }}>
-<img src="/images/pulseira-elos-geometricos-dourada.jpg" alt="Pulseira Elos Geométricos Dourada" style={{ width: "96px", height: "96px", objectFit: "cover", borderRadius: "4px" }} />
-<span style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.95rem", textDecoration: "underline" }}>
-Pulseira Elos Geométricos Dourada — ver detalhes
-</span>
-</Link>
-</div>
-</section>
-);
-}
-
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
     const [activeTab, setActiveTab] = useState("Todos");
@@ -1584,7 +1563,6 @@ useEffect(() => {
           pending={leadStatus === "pending"}
           onGate={() => setGateOpen(true)}
         />
-<FeaturedProductSection />
         <AboutSection />
         <ContactSection />
       </main>
