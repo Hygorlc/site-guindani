@@ -45,16 +45,16 @@ const CATEGORIES = [
 
 const HERO_SLIDES = [
   {
-    img: "/images/hero-1.jpg",
-    title: "Elegância em Cada Detalhe",
-    subtitle: "Conjuntos exclusivos que valorizam sua beleza",
-    cta: "Ver coleção",
-  },
-  {
     img: "/images/convite-feninjer-2026.jpg",
     title: "83ª Feninjer+",
     subtitle: "17 a 20 de agosto de 2026 — Transamérica Expo Center",
     cta: "Saiba mais",
+  },
+  {
+    img: "/images/hero-1.jpg",
+    title: "Elegância em Cada Detalhe",
+    subtitle: "Conjuntos exclusivos que valorizam sua beleza",
+    cta: "Ver coleção",
   },
   {
     img: "/images/hero-2.jpg",
