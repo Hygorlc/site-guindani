@@ -1702,30 +1702,7 @@ export default function Home() {
           const [leadStatus, setLeadStatus] = useState("none");
 const [loginOpen, setLoginOpen] = useState(false);
 
-useEffect(() => {
-  let active = true;
-  let interval = null;
-  async function checkLeadStatus() {
-  try {
-  const res = await fetch("/api/lead-status");
-  const json = await res.json();
-  if (!active) return;
-  setLeadStatus(json.status);
-  if (json.status === "approved") {
-  setUnlocked(true);
-  if (interval) clearInterval(interval);
-  }
-  } catch (err) {}
-  }
-  checkLeadStatus();
-  interval = setInterval(checkLeadStatus, 15000);
-  return function cleanup() {
-  active = false;
-  if (interval) clearInterval(interval);
-  };
-  }, []);
-
-  useFadeInSections();
+useFadeInSections();
 
   return (
     <div className="min-h-screen flex flex-col">
