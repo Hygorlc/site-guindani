@@ -51,12 +51,6 @@ const HERO_SLIDES = [
     cta: "Saiba mais",
   },
   {
-    img: "/images/hero-1.jpg",
-    title: "Elegância em Cada Detalhe",
-    subtitle: "Conjuntos exclusivos que valorizam sua beleza",
-    cta: "Ver coleção",
-  },
-  {
     img: "/images/hero-2.jpg",
     title: "Brilho Contemporâneo",
     subtitle: "Peças com cristais que impõem presença",
@@ -147,7 +141,7 @@ function Topbar() {
   return null;
 }
 
-function Header({ onCatalog }: { onCatalog: () => void }) {
+function Header({ onCatalog, loggedIn, onLoginClick }: { onCatalog: () => void; loggedIn: boolean; onLoginClick: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
@@ -218,16 +212,30 @@ function Header({ onCatalog }: { onCatalog: () => void }) {
             gap: "14px",
           }}
         >
-          <a href="#" aria-label="Facebook" style={{ color: "#555" }}>
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-          </a>
           <a href="#" aria-label="Instagram" style={{ color: "#555" }}>
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
             </svg>
           </a>
+<button
+type="button"
+onClick={onLoginClick}
+style={{
+background: "none",
+border: "1px solid #C9A96E",
+borderRadius: "2px",
+padding: "5px 12px",
+cursor: "pointer",
+color: "#555",
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.72rem",
+fontWeight: 700,
+letterSpacing: "0.05em",
+textTransform: "uppercase",
+}}
+>
+{loggedIn ? "Minha Conta" : "Login"}
+</button>
         </div>
 
         {/* Botão menu mobile */}
@@ -304,6 +312,17 @@ function Header({ onCatalog }: { onCatalog: () => void }) {
               {item.label}
             </a>
           ))}
+<button
+type="button"
+onClick={() => {
+setMenuOpen(false);
+onLoginClick();
+}}
+className="nav-link"
+style={{ color: "#6f6f6f", background: "none", border: "none", textAlign: "left", cursor: "pointer" }}
+>
+{loggedIn ? "Minha Conta" : "Login"}
+</button>
         </nav>
       </div>
     </header>
@@ -1363,7 +1382,7 @@ function CatalogGateModal({
   onClose: () => void;
   onUnlock: () => void;
 }) {
-  const [data, setData] = useState({ name: "", email: "", phone: "", cnpj: "" });
+  const [data, setData] = useState({ name: "", email: "", phone: "", cnpj: "", username: "", password: "" });
   const [sending, setSending] = useState(false);
 
   if (!open) return null;
@@ -1379,6 +1398,7 @@ function CatalogGateModal({
     email: data.email,
     telefone: data.phone,
     cnpj: data.cnpj,
+usuario: data.username,
     _subject: "Novo cadastro para acesso ao catálogo Guindani",
     _template: "table",
     _captcha: "false",
@@ -1400,6 +1420,8 @@ function CatalogGateModal({
     { key: "email", label: "E-mail", type: "email", placeholder: "seu@email.com" },
     { key: "phone", label: "Telefone", type: "tel", placeholder: "(51) 99999-9999" },
     { key: "cnpj", label: "CNPJ", type: "text", placeholder: "00.000.000/0000-00" },
+{ key: "username", label: "Usuario", type: "text", placeholder: "Escolha um nome de usuario" },
+{ key: "password", label: "Senha", type: "password", placeholder: "Crie uma senha (min. 6 caracteres)" },
   ];
 
   return (
@@ -1513,37 +1535,174 @@ function CatalogGateModal({
   );
 }
 
+function ClientLoginModal({
+open,
+onClose,
+onSuccess,
+}: {
+open: boolean;
+onClose: () => void;
+onSuccess: (status: string) => void;
+}) {
+const [data, setData] = useState({ username: "", password: "" });
+const [sending, setSending] = useState(false);
+const [error, setError] = useState("");
+
+if (!open) return null;
+
+const handle = (e: React.FormEvent) => {
+e.preventDefault();
+setSending(true);
+setError("");
+fetch("/api/login-cliente", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(data),
+})
+.then(async function (res) {
+const json = await res.json();
+if (!res.ok) {
+setError(json.error || "Usuario ou senha incorretos");
+return;
+}
+onSuccess(json.status);
+onClose();
+})
+.catch(function () {
+setError("Erro ao efetuar login");
+})
+.finally(function () {
+setSending(false);
+});
+};
+
+return (
+<div
+onClick={onClose}
+style={{
+position: "fixed",
+inset: 0,
+background: "rgba(0,0,0,0.7)",
+zIndex: 10000,
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+padding: "1rem",
+}}
+>
+<form
+onSubmit={handle}
+onClick={(e) => e.stopPropagation()}
+style={{
+background: "white",
+borderRadius: "2px",
+padding: "2rem",
+width: "100%",
+maxWidth: "380px",
+borderTop: "3px solid #C9A96E",
+}}
+>
+<h3
+style={{
+fontFamily: "'Playfair Display', serif",
+fontSize: "1.35rem",
+fontWeight: 700,
+color: "#1A1A1A",
+marginBottom: "0.4rem",
+}}
+>
+Entrar na minha conta
+</h3>
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#666",
+marginBottom: "1.25rem",
+lineHeight: 1.6,
+}}
+>
+Use o usuario e senha criados no cadastro.
+</p>
+<div style={{ marginBottom: "0.9rem" }}>
+<input
+type="text"
+required
+placeholder="Usuario"
+value={data.username}
+onChange={(e) => setData({ ...data, username: e.target.value })}
+style={{
+width: "100%",
+padding: "0.6rem 0.85rem",
+border: "1px solid #d4c4a8",
+borderRadius: "2px",
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.9rem",
+color: "#1A1A1A",
+background: "white",
+outline: "none",
+}}
+/>
+</div>
+<div style={{ marginBottom: "0.9rem" }}>
+<input
+type="password"
+required
+placeholder="Senha"
+value={data.password}
+onChange={(e) => setData({ ...data, password: e.target.value })}
+style={{
+width: "100%",
+padding: "0.6rem 0.85rem",
+border: "1px solid #d4c4a8",
+borderRadius: "2px",
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.9rem",
+color: "#1A1A1A",
+background: "white",
+outline: "none",
+}}
+/>
+</div>
+{error ? (
+<p style={{ color: "#b00020", fontSize: "0.8rem", marginBottom: "0.9rem" }}>{error}</p>
+) : null}
+<button type="submit" className="btn-gold w-full text-center" disabled={sending} style={{ cursor: "pointer" }}>
+{sending ? "Entrando..." : "Entrar"}
+</button>
+<button
+type="button"
+onClick={onClose}
+style={{
+display: "block",
+width: "100%",
+textAlign: "center",
+marginTop: "0.8rem",
+background: "none",
+border: "none",
+cursor: "pointer",
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.8rem",
+color: "#999",
+textDecoration: "underline",
+}}
+>
+Agora nao
+</button>
+</form>
+</div>
+);
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
     const [activeTab, setActiveTab] = useState("Todos");
       const [unlocked, setUnlocked] = useState(false);
         const [gateOpen, setGateOpen] = useState(false);
           const [leadStatus, setLeadStatus] = useState("none");
+const [loginOpen, setLoginOpen] = useState(false);
 
-useEffect(() => {
-  let active = true;
-  let interval = null;
-  async function checkLeadStatus() {
-  try {
-  const res = await fetch("/api/lead-status");
-  const json = await res.json();
-  if (!active) return;
-  setLeadStatus(json.status);
-  if (json.status === "approved") {
-  setUnlocked(true);
-  if (interval) clearInterval(interval);
-  }
-  } catch (err) {}
-  }
-  checkLeadStatus();
-  interval = setInterval(checkLeadStatus, 15000);
-  return function cleanup() {
-  active = false;
-  if (interval) clearInterval(interval);
-  };
-  }, []);
-
-  useFadeInSections();
+useFadeInSections();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -1553,6 +1712,17 @@ useEffect(() => {
           if (!unlocked) setGateOpen(true);
           document.getElementById("categorias")?.scrollIntoView({ behavior: "smooth" });
         }}
+loggedIn={leadStatus !== "none"}
+onLoginClick={() => {
+if (leadStatus !== "none") {
+fetch("/api/logout-cliente", { method: "POST" }).finally(function () {
+setLeadStatus("none");
+setUnlocked(false);
+});
+} else {
+setLoginOpen(true);
+}
+}}
       />
       <main>
         <HeroSlider />
@@ -1571,6 +1741,14 @@ useEffect(() => {
         onClose={() => setGateOpen(false)}
           onUnlock={() => setLeadStatus("pending")}      
           />
+<ClientLoginModal
+open={loginOpen}
+onClose={() => setLoginOpen(false)}
+onSuccess={(status) => {
+setLeadStatus(status);
+if (status === "approved") setUnlocked(true);
+}}
+/>
       <Footer />
       <WhatsAppButton />
     </div>
