@@ -11,7 +11,7 @@ return res.status(401).json({ error: "Nao autorizado" });
 }
 try {
 const sql = await getDb();
-const rows = await sql`SELECT id, name, email, phone, cnpj, status, created_at FROM leads ORDER BY created_at DESC`;
+const rows = await sql`SELECT id, name, email, phone, cnpj, details, status, created_at FROM leads ORDER BY created_at DESC`;
 return res.status(200).json({ leads: rows });
 } catch (err) {
 console.error(err);

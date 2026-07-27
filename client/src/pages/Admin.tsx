@@ -6,6 +6,7 @@ name: string;
 email: string;
 phone: string | null;
 cnpj: string | null;
+  details: string | null;
 status: string;
 created_at: string;
 };
@@ -180,6 +181,7 @@ style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px soli
 <th style={{ padding: "10px" }}>Email</th>
 <th style={{ padding: "10px" }}>Telefone</th>
 <th style={{ padding: "10px" }}>CNPJ</th>
+<th style={{ padding: "10px" }}>Detalhes</th>
 <th style={{ padding: "10px" }}>Status</th>
 <th style={{ padding: "10px" }}>Acoes</th>
 </tr>
@@ -192,6 +194,7 @@ return (
 <td style={{ padding: "10px" }}>{lead.email}</td>
 <td style={{ padding: "10px" }}>{lead.phone}</td>
 <td style={{ padding: "10px" }}>{lead.cnpj}</td>
+<td style={{ padding: "10px", fontSize: "0.75rem", maxWidth: "260px" }}>{(function () { if (!lead.details) return "-"; try { const d = JSON.parse(lead.details); return [d.razaoSocial ? "Razao Social: " + d.razaoSocial : "", d.ie ? "IE: " + d.ie : "", d.ramoDesde ? "No ramo desde: " + d.ramoDesde : "", d.endereco ? "Endereco: " + d.endereco : "", (d.cidade || d.uf) ? "Cidade/UF: " + d.cidade + "/" + d.uf : "", d.cep ? "CEP: " + d.cep : "", d.contato ? "Contato: " + d.contato : "", d.ref1Empresa ? "Ref1: " + d.ref1Empresa + " " + d.ref1CidadeUf + " " + d.ref1Telefone : "", d.ref2Empresa ? "Ref2: " + d.ref2Empresa + " " + d.ref2CidadeUf + " " + d.ref2Telefone : "", d.ref3Empresa ? "Ref3: " + d.ref3Empresa + " " + d.ref3CidadeUf + " " + d.ref3Telefone : ""].filter(Boolean).join(" | "); } catch (e) { return "-"; } })()}</td>
 <td style={{ padding: "10px" }}>{lead.status}</td>
 <td style={{ padding: "10px" }}><div onClick={function () { handleDecision(lead.id, lead.status === "approved" ? "rejected" : "approved"); }} title={lead.status === "approved" ? "Aprovado (clique para desativar)" : "Nao aprovado (clique para ativar)"} style={{ width: "44px", height: "24px", borderRadius: "9999px", background: lead.status === "approved" ? "#C9A96E" : "#ccc", position: "relative", cursor: "pointer", display: "inline-block", transition: "background 0.2s" }}><div style={{ width: "18px", height: "18px", borderRadius: "9999px", background: "#fff", position: "absolute", top: "3px", left: lead.status === "approved" ? "23px" : "3px", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} /></div></td>
 </tr>

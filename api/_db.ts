@@ -6,6 +6,7 @@ if (!ensured) {
 await sql`CREATE TABLE IF NOT EXISTS leads (id SERIAL PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT, cnpj TEXT, status TEXT NOT NULL DEFAULT 'pending', token TEXT UNIQUE NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now())`;
 await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS username TEXT`;
 await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS password_hash TEXT`;
+await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS details TEXT`;
 await sql`CREATE UNIQUE INDEX IF NOT EXISTS leads_username_key ON leads (username) WHERE username IS NOT NULL`;
 ensured = true;
 }
