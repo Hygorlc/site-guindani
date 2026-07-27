@@ -51,12 +51,6 @@ const HERO_SLIDES = [
     cta: "Saiba mais",
   },
   {
-    img: "/images/hero-1.jpg",
-    title: "Elegância em Cada Detalhe",
-    subtitle: "Conjuntos exclusivos que valorizam sua beleza",
-    cta: "Ver coleção",
-  },
-  {
     img: "/images/hero-2.jpg",
     title: "Brilho Contemporâneo",
     subtitle: "Peças com cristais que impõem presença",
