@@ -1374,7 +1374,7 @@ function CatalogGateModal({
   onClose: () => void;
   onUnlock: () => void;
 }) {
-  const [data, setData] = useState({ name: "", cnpj: "", ie: "", razaoSocial: "", ramoDesde: "", endereco: "", cidade: "", uf: "", cep: "", phone: "", contato: "", email: "", ref1Empresa: "", ref1CidadeUf: "", ref1Telefone: "", ref2Empresa: "", ref2CidadeUf: "", ref2Telefone: "", ref3Empresa: "", ref3CidadeUf: "", ref3Telefone: "", username: "", password: "" });
+  const [data, setData] = useState({ name: "", cnpj: "", ie: "", razaoSocial: "", ramoDesde: "", endereco: "", cidade: "", uf: "", cep: "", phone: "", contato: "", email: "", ref1Empresa: "", ref1CidadeUf: "", ref1Telefone: "", ref2Empresa: "", ref2CidadeUf: "", ref2Telefone: "", ref3Empresa: "", ref3CidadeUf: "", ref3Telefone: "", dataFormulario: "", username: "", password: "" });
   const [sending, setSending] = useState(false);
 
   if (!open) return null;
@@ -1401,7 +1401,8 @@ function CatalogGateModal({
     referencia_1: [data.ref1Empresa, data.ref1CidadeUf, data.ref1Telefone].filter(Boolean).join(" - "),
     referencia_2: [data.ref2Empresa, data.ref2CidadeUf, data.ref2Telefone].filter(Boolean).join(" - "),
     referencia_3: [data.ref3Empresa, data.ref3CidadeUf, data.ref3Telefone].filter(Boolean).join(" - "),
-    usuario: data.username,
+        usuario: data.username,
+    data_formulario: data.dataFormulario,
     _subject: "Novo cadastro para acesso ao catálogo Guindani",
     _template: "table",
     _captcha: "false",
@@ -1440,6 +1441,7 @@ function CatalogGateModal({
     { key: "ref3Empresa", label: "Referencia Comercial 3 - Empresa", type: "text", placeholder: "Nome da empresa", required: false },
     { key: "ref3CidadeUf", label: "Referencia Comercial 3 - Cidade/UF", type: "text", placeholder: "Cidade/UF", required: false },
     { key: "ref3Telefone", label: "Referencia Comercial 3 - Telefone", type: "tel", placeholder: "Telefone", required: false },
+      { key: "dataFormulario", label: "Data", type: "text", placeholder: "dd/mm/aaaa" },
     { key: "username", label: "Usuario", type: "text", placeholder: "Escolha um nome de usuario" },
     { key: "password", label: "Senha", type: "password", placeholder: "Crie uma senha (min. 6 caracteres)" },
   ];
@@ -1459,6 +1461,7 @@ function CatalogGateModal({
       }}
     >
       <form
+        autoComplete="off"
         onSubmit={handle}
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -1514,6 +1517,7 @@ function CatalogGateModal({
               type={f.type}
               required={(f as { required?: boolean }).required !== false}
               placeholder={f.placeholder}
+              autoComplete={f.type === "password" ? "new-password" : "off"}
               value={(data as Record<string, string>)[f.key]}
               onChange={(e) => setData({ ...data, [f.key]: e.target.value })}
               style={{
@@ -1611,6 +1615,7 @@ padding: "1rem",
 }}
 >
 <form
+autoComplete="off"
 onSubmit={handle}
 onClick={(e) => e.stopPropagation()}
 style={{
@@ -1649,6 +1654,7 @@ Use o usuario e senha criados no cadastro.
 type="text"
 required
 placeholder="Usuario"
+autoComplete="off"
 value={data.username}
 onChange={(e) => setData({ ...data, username: e.target.value })}
 style={{
@@ -1669,6 +1675,7 @@ outline: "none",
 type="password"
 required
 placeholder="Senha"
+autoComplete="new-password"
 value={data.password}
 onChange={(e) => setData({ ...data, password: e.target.value })}
 style={{

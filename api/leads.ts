@@ -31,6 +31,7 @@ const details = JSON.stringify({
   ref3Empresa: typeof body.ref3Empresa === "string" ? body.ref3Empresa : "",
   ref3CidadeUf: typeof body.ref3CidadeUf === "string" ? body.ref3CidadeUf : "",
   ref3Telefone: typeof body.ref3Telefone === "string" ? body.ref3Telefone : "",
+  dataFormulario: typeof body.dataFormulario === "string" ? body.dataFormulario : "",
 });
 const username = typeof body.username === "string" ? body.username.trim() : "";
 const password = typeof body.password === "string" ? body.password : "";
