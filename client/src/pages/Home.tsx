@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GUINDANI_LOGO } from "../assets/guindani-logo";
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
+import { useLocation } from "wouter";
 const LOGO_URL =
   GUINDANI_LOGO;
 const CATEGORIES = [
@@ -499,6 +500,7 @@ function CategoriesSection({
   onGate: () => void;
 }) {
   const [zoomCat, setZoomCat] = useState<{ img: string; label: string } | null>(null);
+  const [, setLocation] = useLocation();
   const filtered =
     activeTab === "Todos"
       ? CATEGORIES
@@ -559,7 +561,7 @@ function CategoriesSection({
               key={cat.id}
               className="category-card"
               style={{ aspectRatio: "4/3", borderRadius: "2px", cursor: "pointer" }}
-          onClick={() => (unlocked ? setZoomCat(cat) : pending ? undefined : onGate())}
+          onClick={() => (unlocked ? (cat.id === "aneis" ? setLocation("/categoria/aneis") : setZoomCat(cat)) : pending ? undefined : onGate())}
             >
               <img
                 src={cat.img}

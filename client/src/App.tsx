@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import ProdutoPulseiraElos from "./pages/ProdutoPulseiraElos";
+import Aneis from "./pages/Aneis";
 
 /**
  * Guindani — App
@@ -20,6 +21,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
       <Route path="/produto/pulseira-elos-geometricos" component={ProdutoPulseiraElos} />
+      <Route path="/categoria/aneis" component={Aneis} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
