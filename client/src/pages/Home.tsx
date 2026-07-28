@@ -561,7 +561,7 @@ function CategoriesSection({
               key={cat.id}
               className="category-card"
               style={{ aspectRatio: "4/3", borderRadius: "2px", cursor: "pointer" }}
-          onClick={() => (unlocked ? (cat.id === "aneis" ? setLocation("/categoria/aneis") : setZoomCat(cat)) : pending ? undefined : onGate())}
+          onClick={() => (unlocked ? (cat.id === "aneis" ? setLocation("/categoria/aneis") : cat.id === "correntes" ? setLocation("/categoria/correntes") : setZoomCat(cat)) : pending ? undefined : onGate())}
             >
               <img
                 src={cat.img}
