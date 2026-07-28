@@ -9,6 +9,7 @@ import Admin from "./pages/Admin";
 import ProdutoPulseiraElos from "./pages/ProdutoPulseiraElos";
 import Aneis from "./pages/Aneis";
 import Correntes from "./pages/Correntes";
+import Gargantilhas from "./pages/Gargantilhas";
 
 /**
  * Guindani — App
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/produto/pulseira-elos-geometricos" component={ProdutoPulseiraElos} />
       <Route path="/categoria/aneis" component={Aneis} />
         <Route path="/categoria/correntes" component={Correntes} />
+        <Route path="/categoria/gargantilhas" component={Gargantilhas} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
