@@ -52,21 +52,36 @@ export default function Aneis() {
           }}
         >
           {ANEIS_IMAGES.map((src, i) => (
-            <div
-              key={src}
-              style={{
-                aspectRatio: "1 / 1",
-                overflow: "hidden",
-                borderRadius: "2px",
-                background: "#F5F0E8",
-              }}
-            >
-              <img
-                src={src}
-                alt={"Anel Guindani " + (i + 1)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            </div>
+            
+              <div key={src}>
+                <div
+                  style={{
+                    aspectRatio: "1 / 1",
+                    overflow: "hidden",
+                    borderRadius: "2px",
+                    background: "#F5F0E8",
+                  }}
+                >
+                  <img
+                    src={src}
+                    alt={"Anel Guindani " + (i + 1)}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                </div>
+                {i === 1 && (
+                  <p
+                    style={{
+                      fontFamily: "'Lato', sans-serif",
+                      fontSize: "0.85rem",
+                      color: "#1A1A1A",
+                      textAlign: "center",
+                      marginTop: "0.75rem",
+                    }}
+                  >
+                    CÓDIGO 2174877  ANEL AU 750 PESO MÉDIO 1,50GRS
+                  </p>
+                )}
+              </div>
           ))}
         </div>
       </div>
