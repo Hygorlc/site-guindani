@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import ZoomImage from "../components/ZoomImage";
 
 const ANEIS_IMAGES = [
   "/images/aneis-1.jpg",
@@ -54,20 +55,7 @@ export default function Aneis() {
           {ANEIS_IMAGES.map((src, i) => (
             
               <div key={src}>
-                <div
-                  style={{
-                    aspectRatio: "1 / 1",
-                    overflow: "hidden",
-                    borderRadius: "2px",
-                    background: "#F5F0E8",
-                  }}
-                >
-                  <img
-                    src={src}
-                    alt={"Anel Guindani " + (i + 1)}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                </div>
+                <ZoomImage src={src} alt={"Anel Guindani " + (i + 1)} />
               {i === 0 && (
                 <p
                   style={{
