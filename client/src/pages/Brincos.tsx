@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import ZoomImage from "../components/ZoomImage";
 
 const BRINCOS_IMAGES = [
   "/images/brincos-1.jpg",
@@ -24,13 +25,7 @@ export default function Brincos() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {BRINCOS_IMAGES.map((src, i) => (
-            <div key={src} style={{ aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "2px", background: "#F5F0E8" }}>
-              <img
-                src={src}
-                alt={"Brinco Guindani " + (i + 1)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            </div>
+            <div key={src}><ZoomImage src={src} alt={"Brinco Guindani " + (i + 1)} /></div>
           ))}
         </div>
       </div>
