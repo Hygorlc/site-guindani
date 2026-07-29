@@ -107,6 +107,19 @@ marginTop: "0.75rem",
 CÓDIGO 2173677  ANEL AU 750 PESO MÉDIO 3,77GRS
 </p>
 )}
+{i === 3 && (
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#1A1A1A",
+textAlign: "center",
+marginTop: "0.75rem",
+}}
+>
+CÓDIGO 2173577  ANEL AU 750 PESO MÉDIO 3,78GRS
+</p>
+)}
               </div>
           ))}
         </div>
