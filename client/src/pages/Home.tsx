@@ -30,7 +30,7 @@ const CATEGORIES = [
   {
     id: "pulseiras",
     label: "Pulseiras",
-    img: "/images/pulseira-elos-geometricos-dourada.jpg",
+    img: "/images/pulseiras-capa.jpg",
   },
   {
     id: "pingentes",
