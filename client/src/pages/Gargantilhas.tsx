@@ -25,13 +25,28 @@ export default function Gargantilhas() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {GARGANTILHAS_IMAGES.map((src, i) => (
-            <div key={src} style={{ aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "2px", background: "#F5F0E8" }}>
-              <img
-                src={src}
-                alt={"Gargantilha Guindani " + (i + 1)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            </div>
+            <div key={src}>
+<div style={{ aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "2px", background: "#F5F0E8" }}>
+<img
+src={src}
+alt={"Gargantilha Guindani " + (i + 1)}
+style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+/>
+</div>
+{i === 0 && (
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#1A1A1A",
+textAlign: "center",
+marginTop: "0.75rem",
+}}
+>
+CÓDIGO 6080877 GARGANTILHA AU 750 CANUTILHOS PESO MÉDIO 6,15GRS
+</p>
+)}
+</div>
           ))}
         </div>
       </div>
