@@ -116,7 +116,7 @@ const SERVICES = [
   },
 ];
 
-const TABS = ["Todos", "Anéis", "Correntes", "Gargantilhas", "Pulseiras", "Brincos"];
+const TABS = ["Todos", "Anéis", "Correntes", "Gargantilhas", "Pulseiras", "Brincos", "Pingentes"];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function useFadeInSections() {
