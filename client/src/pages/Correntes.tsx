@@ -93,6 +93,19 @@ marginTop: "0.75rem",
 CÓDIGO 4028377 CORRENTE AU 750 45CM PESO MÉDIO 13,43GR
 </p>
 )}
+{i === 1 && (
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#1A1A1A",
+textAlign: "center",
+marginTop: "0.75rem",
+}}
+>
+CÓDIGO 4028077 CORRENTE AU 750 45CM PESO MÉDIO 5,47GRS
+</p>
+)}
 </div>
           ))}
         </div>
