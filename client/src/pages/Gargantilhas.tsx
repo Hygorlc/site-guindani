@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import ZoomImage from "../components/ZoomImage";
 
 const GARGANTILHAS_IMAGES = [
   "/images/gargantilhas-1.jpg",
@@ -26,13 +27,7 @@ export default function Gargantilhas() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {GARGANTILHAS_IMAGES.map((src, i) => (
             <div key={src}>
-<div style={{ aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "2px", background: "#F5F0E8" }}>
-<img
-src={src}
-alt={"Gargantilha Guindani " + (i + 1)}
-style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-/>
-</div>
+<ZoomImage src={src} alt={"Gargantilha Guindani " + (i + 1)} />
 {i === 0 && (
 <p
 style={{
