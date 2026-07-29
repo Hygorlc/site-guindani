@@ -250,7 +250,7 @@
     transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
   .category-card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.18);
   }
   .category-card .overlay {
     position: absolute;
