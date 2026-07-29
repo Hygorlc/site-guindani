@@ -46,6 +46,19 @@ marginTop: "0.75rem",
 CÓDIGO 6080877 GARGANTILHA AU 750 CANUTILHOS PESO MÉDIO 6,15GRS
 </p>
 )}
+{i === 1 && (
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#1A1A1A",
+textAlign: "center",
+marginTop: "0.75rem",
+}}
+>
+CÓDIGO 6080677 GARGANTILHA AU 750 PESO MÉDIO 6,68GRS
+</p>
+)}
 </div>
           ))}
         </div>
