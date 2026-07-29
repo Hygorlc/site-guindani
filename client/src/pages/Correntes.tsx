@@ -80,6 +80,19 @@ marginTop: "0.75rem",
 CÓDIGO 4028677 CORRENTE 45CM 1,20KD DIAMANTES PESO MÉDIO 13,55GRS
 </p>
 )}
+{i === 0 && (
+<p
+style={{
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.85rem",
+color: "#1A1A1A",
+textAlign: "center",
+marginTop: "0.75rem",
+}}
+>
+CÓDIGO 4028377 CORRENTE AU 750 45CM PESO MÉDIO 13,43GR
+</p>
+)}
 </div>
           ))}
         </div>
