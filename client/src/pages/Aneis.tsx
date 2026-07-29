@@ -68,6 +68,19 @@ export default function Aneis() {
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 </div>
+              {i === 0 && (
+                <p
+                  style={{
+                    fontFamily: "'Lato', sans-serif",
+                    fontSize: "0.85rem",
+                    color: "#1A1A1A",
+                    textAlign: "center",
+                    marginTop: "0.75rem",
+                  }}
+                >
+                  CÓDIGO 2173777  ANEL AU 750 PESO MÉDIO 5,30GRS
+                </p>
+              )}
                 {i === 1 && (
                   <p
                     style={{
