@@ -1,0 +1,40 @@
+import { Link } from "wouter";
+
+const PULSEIRAS_IMAGES = [
+  "/images/pulseiras-1.jpg",
+  "/images/pulseiras-2.jpg",
+  "/images/pulseiras-3.jpg",
+];
+
+export default function Pulseiras() {
+  return (
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "'Lato', sans-serif" }}>
+      <div style={{ padding: "1.5rem" }}>
+        <Link href="/" style={{ color: "#1A1A1A", textDecoration: "none", fontSize: "0.95rem" }}>
+          Voltar ao catálogo
+        </Link>
+      </div>
+
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "1rem 1.5rem 4rem" }}>
+        <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#C9A96E", marginBottom: "0.5rem", textAlign: "center" }}>
+          Nossa Coleção
+        </p>
+        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: "#1A1A1A", marginBottom: "2.5rem", textAlign: "center" }}>
+          Pulseiras
+        </h1>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
+          {PULSEIRAS_IMAGES.map((src, i) => (
+            <div key={src} style={{ aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "2px", background: "#F5F0E8" }}>
+              <img
+                src={src}
+                alt={"Pulseira Guindani " + (i + 1)}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

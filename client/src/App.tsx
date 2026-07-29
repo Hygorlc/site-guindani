@@ -10,6 +10,7 @@ import ProdutoPulseiraElos from "./pages/ProdutoPulseiraElos";
 import Aneis from "./pages/Aneis";
 import Correntes from "./pages/Correntes";
 import Gargantilhas from "./pages/Gargantilhas";
+import Pulseiras from "./pages/Pulseiras";
 
 /**
  * Guindani — App
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/categoria/aneis" component={Aneis} />
         <Route path="/categoria/correntes" component={Correntes} />
         <Route path="/categoria/gargantilhas" component={Gargantilhas} />
+        <Route path="/categoria/pulseiras" component={Pulseiras} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
