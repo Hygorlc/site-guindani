@@ -80,7 +80,7 @@ marginTop: "0.75rem",
 CÓDIGO 4028677 CORRENTE 45CM 1,20KD DIAMANTES PESO MÉDIO 13,55GRS
 </p>
 )}
-</div>>
+</div>
           ))}
         </div>
       </div>
