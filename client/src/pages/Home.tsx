@@ -1730,6 +1730,16 @@ export default function Home() {
         const [gateOpen, setGateOpen] = useState(false);
           const [leadStatus, setLeadStatus] = useState("none");
 const [loginOpen, setLoginOpen] = useState(false);
+useEffect(() => {
+fetch("/api/lead-status")
+.then((res) => res.json())
+.then((json) => {
+setLeadStatus(json.status);
+if (json.status === "approved") setUnlocked(true);
+})
+.catch(() => {});
+}, []);
+
 
 useFadeInSections();
 
