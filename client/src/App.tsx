@@ -12,6 +12,7 @@ import Correntes from "./pages/Correntes";
 import Gargantilhas from "./pages/Gargantilhas";
 import Pulseiras from "./pages/Pulseiras";
 import Brincos from "./pages/Brincos";
+import Pingentes from "./pages/Pingentes";
 
 /**
  * Guindani — App
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/categoria/gargantilhas" component={Gargantilhas} />
         <Route path="/categoria/pulseiras" component={Pulseiras} />
         <Route path="/categoria/brincos" component={Brincos} />
+        <Route path="/categoria/pingentes" component={Pingentes} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

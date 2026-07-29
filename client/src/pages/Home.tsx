@@ -561,7 +561,7 @@ function CategoriesSection({
               key={cat.id}
               className="category-card"
               style={{ aspectRatio: "4/3", borderRadius: "2px", cursor: "pointer" }}
-          onClick={() => (unlocked ? (cat.id === "aneis" ? setLocation("/categoria/aneis") : cat.id === "correntes" ? setLocation("/categoria/correntes") : cat.id === "gargantilhas" ? setLocation("/categoria/gargantilhas") : cat.id === "pulseiras" ? setLocation("/categoria/pulseiras") : cat.id === "brincos" ? setLocation("/categoria/brincos") : setZoomCat(cat)) : pending ? undefined : onGate())}
+          onClick={() => (unlocked ? (cat.id === "aneis" ? setLocation("/categoria/aneis") : cat.id === "correntes" ? setLocation("/categoria/correntes") : cat.id === "gargantilhas" ? setLocation("/categoria/gargantilhas") : cat.id === "pulseiras" ? setLocation("/categoria/pulseiras") : cat.id === "brincos" ? setLocation("/categoria/brincos") : cat.id === "pingentes" ? setLocation("/categoria/pingentes") : setZoomCat(cat)) : pending ? undefined : onGate())}
             >
               <img
                 src={cat.img}
