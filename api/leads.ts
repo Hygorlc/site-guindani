@@ -52,7 +52,7 @@ return res.status(409).json({ error: "Esse nome de usuario ja esta em uso" });
 const token = crypto.randomUUID();
 const passwordHash = hashPassword(password);
 const rows = await sql`INSERT INTO leads (name, email, phone, cnpj, status, token, username, password_hash, details) VALUES (${name}, ${email}, ${phone || null}, ${cnpj || null}, 'pending', ${token}, ${username}, ${passwordHash}, ${details}) RETURNING id, status`;
-res.setHeader("Set-Cookie", "lead_token=" + token + "; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=15552000");
+res.setHeader("Set-Cookie", "lead_token=" + token + "; Path=/; HttpOnly; Secure; SameSite=Lax");
 return res.status(200).json({ status: rows[0] ? rows[0].status : "pending" });
 } catch (err) {
 console.error(err);
