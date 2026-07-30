@@ -26,7 +26,7 @@ export default function Pulseiras() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {PULSEIRAS_IMAGES.map((src, i) => (
-            <div key={src}><ZoomImage src={src} alt={"Pulseira Guindani " + (i + 1)} /></div>
+            <div key={src}><ZoomImage src={src} alt={"Pulseira Guindani " + (i + 1)} />{i === 1 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 9058377 PULSEIRA AU 750 MADREPÉROLA PESO MÉDIO 3,85GRS</p>)}</div>
           ))}
         </div>
       </div>
