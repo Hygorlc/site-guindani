@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import ZoomImage from "../components/ZoomImage";
+import ZoomImage from "../components/ZoomImage"; import { useEffect, useState } from "react";
 
 const BRINCOS_IMAGES = [
   "/images/brincos-1.jpg",
@@ -7,7 +7,7 @@ const BRINCOS_IMAGES = [
   "/images/brincos-3.jpg",
 ];
 
-export default function Brincos() {
+export default function Brincos() { const [extraProducts, setExtraProducts] = useState<{ id: number; category: string; image_url: string; description: string }[]>([]); useEffect(function () { fetch("/api/products?category=brincos").then(function (r) { return r.json(); }).then(function (data) { setExtraProducts(data.products || []); }).catch(function () {}); }, []);
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "'Lato', sans-serif" }}>
       <div style={{ padding: "1.5rem" }}>
@@ -26,7 +26,7 @@ export default function Brincos() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {BRINCOS_IMAGES.map((src, i) => (
             <div key={src}><ZoomImage src={src} alt={"Brinco Guindani " + (i + 1)} />{i === 0 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3216977 BRINCO AU 750 PESO MÉDIO 2,27GRS</p>)}{i === 1 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3220377 BRINCO AU 750 PESO MÉDIO 2,63GRS</p>)}{i === 2 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3214878 BRINCO AU 750 0,30KD DIAMANTES PESO MÉDIO 2,48GRS</p>)}</div>
-          ))}
+          ))} {extraProducts.map(function (p) { return (<div key={"extra-" + p.id}><ZoomImage src={p.image_url} alt={p.description} zoomScale={3} /><p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>{p.description}</p></div>); })}
         </div>
       </div>
     </div>
