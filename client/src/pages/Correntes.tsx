@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import ZoomImage from "../components/ZoomImage";
+import ZoomImage from "../components/ZoomImage"; import { useEffect, useState } from "react";
 
 const CORRENTES_IMAGES = [
   "/images/correntes-1.jpg",
@@ -7,7 +7,7 @@ const CORRENTES_IMAGES = [
   "/images/correntes-3.jpg",
 ];
 
-export default function Correntes() {
+export default function Correntes() { const [extraProducts, setExtraProducts] = useState<{ id: number; category: string; image_url: string; description: string }[]>([]); useEffect(function () { fetch("/api/products?category=correntes").then(function (r) { return r.json(); }).then(function (data) { setExtraProducts(data.products || []); }).catch(function () {}); }, []);
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "'Lato', sans-serif" }}>
       <div style={{ padding: "1.5rem" }}>
@@ -95,7 +95,7 @@ CÓDIGO 4028077 CORRENTE AU 750 45CM PESO MÉDIO 5,47GRS
 </p>
 )}
 </div>
-          ))}
+          ))} {extraProducts.map(function (p) { return (<div key={"extra-" + p.id}><ZoomImage src={p.image_url} alt={p.description} zoomScale={3} /><p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>{p.description}</p></div>); })}
         </div>
       </div>
     </div>
