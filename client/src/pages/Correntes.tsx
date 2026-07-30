@@ -54,7 +54,7 @@ export default function Correntes() {
         >
           {CORRENTES_IMAGES.map((src, i) => (
 <div key={src}>
-<ZoomImage src={src} alt={"Corrente Guindani " + (i + 1)} />
+<ZoomImage src={src} alt={"Corrente Guindani " + (i + 1)} zoomScale={3} />
 {i === 2 && (
 <p
 style={{
