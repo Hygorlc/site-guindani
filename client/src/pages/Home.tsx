@@ -1709,6 +1709,7 @@ export default function Home() {
           const [leadStatus, setLeadStatus] = useState("none");
 const [loginOpen, setLoginOpen] = useState(false);
 useEffect(() => {
+if (sessionStorage.getItem("guindani_client_active") !== "1") { return; }
 fetch("/api/lead-status")
 .then((res) => res.json())
 .then((json) => {
@@ -1733,6 +1734,7 @@ loggedIn={leadStatus !== "none"}
 onLoginClick={() => {
 if (leadStatus !== "none") {
 fetch("/api/logout-cliente", { method: "POST" }).finally(function () {
+sessionStorage.removeItem("guindani_client_active");
 setLeadStatus("none");
 setUnlocked(false);
 });
@@ -1756,12 +1758,13 @@ setLoginOpen(true);
       <CatalogGateModal
         open={gateOpen}
         onClose={() => setGateOpen(false)}
-          onUnlock={() => setLeadStatus("pending")}      
+          onUnlock={() => { sessionStorage.setItem("guindani_client_active", "1"); setLeadStatus("pending"); }}      
           />
 <ClientLoginModal
 open={loginOpen}
 onClose={() => setLoginOpen(false)}
 onSuccess={(status) => {
+sessionStorage.setItem("guindani_client_active", "1");
 setLeadStatus(status);
 if (status === "approved") setUnlocked(true);
 }}
