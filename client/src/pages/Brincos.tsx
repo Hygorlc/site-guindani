@@ -25,7 +25,7 @@ export default function Brincos() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {BRINCOS_IMAGES.map((src, i) => (
-            <div key={src}><ZoomImage src={src} alt={"Brinco Guindani " + (i + 1)} />{i === 1 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3220377 BRINCO AU 750 PESO MÉDIO 2,63GRS</p>)}</div>
+            <div key={src}><ZoomImage src={src} alt={"Brinco Guindani " + (i + 1)} />{i === 0 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3216977 BRINCO AU 750 PESO MÉDIO 2,27GRS</p>)}{i === 1 && (<p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>CÓDIGO 3220377 BRINCO AU 750 PESO MÉDIO 2,63GRS</p>)}</div>
           ))}
         </div>
       </div>
