@@ -18,7 +18,7 @@ const rows = await sql`SELECT token, password_hash, status FROM leads WHERE user
 if (!rows.length || !verifyPassword(password, rows[0].password_hash)) {
 return res.status(401).json({ error: "Usuario ou senha incorretos" });
 }
-res.setHeader("Set-Cookie", "lead_token=" + rows[0].token + "; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=15552000");
+res.setHeader("Set-Cookie", "lead_token=" + rows[0].token + "; Path=/; HttpOnly; Secure; SameSite=Lax");
 return res.status(200).json({ status: rows[0].status });
 } catch (err) {
 console.error(err);
