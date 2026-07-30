@@ -21,7 +21,7 @@ const [loading, setLoading] = useState(false);
 const [showForm, setShowForm] = useState(false);
 const [newLead, setNewLead] = useState({ name: "", email: "", phone: "", cnpj: "" });
 const [creating, setCreating] = useState(false);
-const [createError, setCreateError] = useState("");
+const [createError, setCreateError] = useState(""); const [tab, setTab] = useState("leads"); const [products, setProducts] = useState<{ id: number; category: string; image_url: string; description: string }[]>([]); const [prodCategory, setProdCategory] = useState("correntes"); const [prodDescription, setProdDescription] = useState(""); const [prodFile, setProdFile] = useState<File | null>(null); const [prodError, setProdError] = useState(""); const [uploading, setUploading] = useState(false); const [tab, setTab] = useState("leads"); const [products, setProducts] = useState<{ id: number; category: string; image_url: string; description: string }[]>([]); const [prodCategory, setProdCategory] = useState("correntes"); const [prodDescription, setProdDescription] = useState(""); const [prodFile, setProdFile] = useState<File | null>(null); const [prodError, setProdError] = useState(""); const [uploading, setUploading] = useState(false);
 
 async function loadLeads() {
 setLoading(true);
@@ -40,7 +40,7 @@ setLoading(false);
 }
 
 useEffect(function () {
-loadLeads();
+loadLeads(); loadProducts();
 }, []);
 
 async function handleLogin(e: React.FormEvent) {
@@ -58,7 +58,7 @@ return;
 }
 setUsername("");
 setPassword("");
-loadLeads();
+loadLeads(); loadProducts();
 } catch (err) {
 setError("Erro ao entrar");
 }
@@ -70,7 +70,7 @@ method: "POST",
 headers: { "Content-Type": "application/json" },
 body: JSON.stringify({ id: id, status: status }),
 });
-loadLeads();
+loadLeads(); loadProducts();
 }
 
 async function handleCreateLead(e: React.FormEvent) {
@@ -94,14 +94,14 @@ return;
 }
 setNewLead({ name: "", email: "", phone: "", cnpj: "" });
 setShowForm(false);
-loadLeads();
+loadLeads(); loadProducts();
 } catch (err) {
 setCreateError("Erro ao criar cadastro");
 }
 setCreating(false);
 }
 
-if (!authed) {
+async function loadProducts() { try { const res = await fetch("/api/admin/products"); if (res.status === 401) { setAuthed(false); return; } const json = await res.json(); setProducts(json.products || []); } catch (err) {} } async function handleAddProduct(e: React.FormEvent) { e.preventDefault(); setProdError(""); if (!prodFile || !prodDescription) { setProdError("Selecione uma imagem e escreva a descricao"); return; } setUploading(true); try { const reader = new FileReader(); const dataUrl: string = await new Promise(function (resolve, reject) { reader.onload = function () { resolve(reader.result as string); }; reader.onerror = reject; reader.readAsDataURL(prodFile as File); }); const uploadRes = await fetch("/api/admin/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: dataUrl, filename: (prodFile as File).name }) }); const uploadJson = await uploadRes.json(); if (!uploadRes.ok) { setProdError(uploadJson.error || "Erro ao enviar imagem"); setUploading(false); return; } const createRes = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: prodCategory, image_url: uploadJson.url, description: prodDescription }) }); if (!createRes.ok) { setProdError("Erro ao salvar produto"); setUploading(false); return; } setProdDescription(""); setProdFile(null); loadProducts(); } catch (err) { setProdError("Erro ao adicionar produto"); } setUploading(false); } async function handleDeleteProduct(id: number) { await fetch("/api/admin/products", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id }) }); loadProducts(); } if (!authed) {
 return (
 <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1A1A1A" }}>
 <form onSubmit={handleLogin} style={{ background: "#fff", padding: "32px", borderRadius: "4px", width: "320px" }}>
@@ -130,7 +130,7 @@ Entrar
 }
 
 return (
-<div style={{ minHeight: "100vh", background: "#f7f5f2", padding: "32px" }}>
+<div style={{ minHeight: "100vh", background: "#f7f5f2", padding: "32px" }}><div style={{ marginBottom: "20px", display: "flex", gap: "8px" }}><button onClick={function () { setTab("leads"); }} style={{ padding: "8px 16px", background: tab === "leads" ? "#1A1A1A" : "#fff", color: tab === "leads" ? "#fff" : "#1A1A1A", border: "1px solid #1A1A1A", borderRadius: "2px", cursor: "pointer" }}>Cadastros</button><button onClick={function () { setTab("produtos"); }} style={{ padding: "8px 16px", background: tab === "produtos" ? "#1A1A1A" : "#fff", color: tab === "produtos" ? "#fff" : "#1A1A1A", border: "1px solid #1A1A1A", borderRadius: "2px", cursor: "pointer" }}>Produtos</button></div>{tab === "leads" && (<>
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
 <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem" }}>Cadastros do Catalogo</h1>
 <button onClick={function () { setShowForm(!showForm); }} style={{ cursor: "pointer", border: "none", padding: "10px 16px", background: "#C9A96E", color: "#1A1A1A", borderRadius: "2px" }}>
@@ -201,7 +201,7 @@ return (
 );
 })}
 </tbody>
-</table>
+</table></>)}{tab === "produtos" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Produtos das Categorias</h1><form onSubmit={handleAddProduct} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{prodError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{prodError}</p>)}<select value={prodCategory} onChange={function (e) { setProdCategory(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }}><option value="correntes">Correntes</option><option value="gargantilhas">Gargantilhas</option><option value="brincos">Brincos</option><option value="pulseiras">Pulseiras</option><option value="aneis">Aneis</option><option value="pingentes">Pingentes</option></select><input type="file" accept="image/*" onChange={function (e) { setProdFile(e.target.files ? e.target.files[0] : null); }} style={{ padding: "6px" }} /><input type="text" placeholder="Codigo e descricao do produto" value={prodDescription} onChange={function (e) { setProdDescription(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={uploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{uploading ? "Enviando..." : "Adicionar Produto"}</button></form><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{products.map(function (p) { return (<div key={p.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={p.image_url} alt={p.description} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} /><p style={{ fontSize: "0.75rem", color: "#C9A96E", textTransform: "uppercase", fontWeight: 700 }}>{p.category}</p><p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{p.description}</p><button onClick={function () { handleDeleteProduct(p.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div></>)}</>)}{tab === "produtos" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Produtos das Categorias</h1><form onSubmit={handleAddProduct} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{prodError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{prodError}</p>)}<select value={prodCategory} onChange={function (e) { setProdCategory(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }}><option value="correntes">Correntes</option><option value="gargantilhas">Gargantilhas</option><option value="brincos">Brincos</option><option value="pulseiras">Pulseiras</option><option value="aneis">Aneis</option><option value="pingentes">Pingentes</option></select><input type="file" accept="image/*" onChange={function (e) { setProdFile(e.target.files ? e.target.files[0] : null); }} style={{ padding: "6px" }} /><input type="text" placeholder="Codigo e descricao do produto" value={prodDescription} onChange={function (e) { setProdDescription(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={uploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{uploading ? "Enviando..." : "Adicionar Produto"}</button></form><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{products.map(function (p) { return (<div key={p.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={p.image_url} alt={p.description} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} /><p style={{ fontSize: "0.75rem", color: "#C9A96E", textTransform: "uppercase", fontWeight: 700 }}>{p.category}</p><p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{p.description}</p><button onClick={function () { handleDeleteProduct(p.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div></>)}
 </div>
 );
 }
