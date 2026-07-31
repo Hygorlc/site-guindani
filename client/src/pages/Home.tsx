@@ -167,10 +167,11 @@ function Header({ onCatalog, loggedIn, onLoginClick }: { onCatalog: () => void; 
       .finally(function () { setSearching(false); });
   }
 
-  function goToProductCategory(category: string) {
+  function goToProductCategory(category: string, productId: number) {
     setSearchOpen(false);
     setSearchResults(null);
     setSearchQuery("");
+    sessionStorage.setItem("guindani_highlight_product", String(productId));
     setHeaderLocation("/categoria/" + category);
   }
 
@@ -319,7 +320,7 @@ function Header({ onCatalog, loggedIn, onLoginClick }: { onCatalog: () => void; 
                     {searchResults.map((p) => (
                       <div
                         key={p.id}
-                        onClick={() => goToProductCategory(p.category)}
+                        onClick={() => goToProductCategory(p.category, p.id)}
                         style={{
                           display: "flex",
                           gap: "8px",
@@ -492,7 +493,7 @@ style={{ color: "#6f6f6f", background: "none", border: "none", textAlign: "left"
                   {searchResults.map((p) => (
                     <div
                       key={"m-" + p.id}
-                      onClick={() => { setMenuOpen(false); goToProductCategory(p.category); }}
+                      onClick={() => { setMenuOpen(false); goToProductCategory(p.category, p.id); }}
                       style={{
                         display: "flex",
                         gap: "8px",
