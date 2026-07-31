@@ -44,7 +44,7 @@ const CATEGORIES = [
   },
 ];
 
-const HERO_SLIDES = [
+const DEFAULT_HERO_SLIDES = [
   {
     img: "/images/convite-feninjer-2026.jpg",
     title: "83ª Feninjer+",
@@ -336,7 +336,7 @@ function HeroSlider() {
 
   const startTimer = () => {
     timerRef.current = setInterval(() => {
-      setCurrent((c) => (c + 1) % HERO_SLIDES.length);
+      setCurrent((c) => (c + 1) % heroSlides.length);
     }, 5500);
   };
 
@@ -365,16 +365,16 @@ function HeroSlider() {
       <div
         className="absolute inset-0 flex h-full"
         style={{
-          width: `${HERO_SLIDES.length * 100}%`,
-          transform: `translateX(-${current * (100 / HERO_SLIDES.length)}%)`,
+          width: `${heroSlides.length * 100}%`,
+          transform: `translateX(-${current * (100 / heroSlides.length)}%)`,
           transition: "transform 1.1s cubic-bezier(0.65, 0, 0.35, 1)",
         }}
       >
-        {HERO_SLIDES.map((slide, i) => (
+        {heroSlides.map((slide, i) => (
           <div
             key={i}
             className="relative h-full overflow-hidden"
-            style={{ width: `${100 / HERO_SLIDES.length}%`, background: "#090806" }}
+            style={{ width: `${100 / heroSlides.length}%`, background: "#090806" }}
           >
             <div
               className="absolute inset-0"
@@ -464,7 +464,7 @@ function HeroSlider() {
       </div>
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {HERO_SLIDES.map((_, i) => (
+        {heroSlides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
@@ -1712,6 +1712,17 @@ export default function Home() {
         const [gateOpen, setGateOpen] = useState(false);
           const [leadStatus, setLeadStatus] = useState("none");
 const [loginOpen, setLoginOpen] = useState(false);
+const [heroSlides, setHeroSlides] = useState(DEFAULT_HERO_SLIDES);
+useEffect(() => {
+fetch("/api/carousel")
+.then((res) => res.json())
+.then((json) => {
+if (json.slides && json.slides.length > 0) {
+setHeroSlides(json.slides.map((s) => ({ img: s.image_url, title: s.title, subtitle: s.subtitle, cta: s.cta })));
+}
+})
+.catch(() => {});
+}, []);
 useEffect(() => {
 if (sessionStorage.getItem("guindani_client_active") !== "1") { return; }
 fetch("/api/lead-status")
