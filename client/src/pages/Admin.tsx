@@ -101,6 +101,20 @@ return;
 alert("Senha redefinida com sucesso");
 }
 
+async function handleDeleteLead(id: number) {
+if (!window.confirm("Tem certeza que deseja excluir este cadastro? Esta acao nao pode ser desfeita.")) return;
+const res = await fetch("/api/admin/leads", {
+method: "DELETE",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ id: id }),
+});
+if (!res.ok) {
+alert("Erro ao excluir cadastro");
+return;
+}
+loadLeads();
+}
+
 async function handleCreateLead(e: React.FormEvent) {
 e.preventDefault();
 setCreateError("");
@@ -281,6 +295,7 @@ style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px soli
 <th style={{ padding: "10px" }}>Status</th>
 <th style={{ padding: "10px" }}>Acoes</th>
 <th style={{ padding: "10px" }}>Senha</th>
+<th style={{ padding: "10px" }}>Excluir</th>
 </tr>
 </thead>
 <tbody>
@@ -296,6 +311,9 @@ return (
 <td style={{ padding: "10px" }}><div onClick={function () { handleDecision(lead.id, lead.status === "approved" ? "rejected" : "approved"); }} title={lead.status === "approved" ? "Aprovado (clique para desativar)" : "Nao aprovado (clique para ativar)"} style={{ width: "44px", height: "24px", borderRadius: "9999px", background: lead.status === "approved" ? "#C9A96E" : "#ccc", position: "relative", cursor: "pointer", display: "inline-block", transition: "background 0.2s" }}><div style={{ width: "18px", height: "18px", borderRadius: "9999px", background: "#fff", position: "absolute", top: "3px", left: lead.status === "approved" ? "23px" : "3px", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} /></div></td>
 <td style={{ padding: "10px" }}>
 <button type="button" onClick={function () { handleResetPassword(lead.id); }} style={{ padding: "6px 10px", border: "1px solid #ccc", borderRadius: "2px", background: "#fff", cursor: "pointer", fontSize: "0.8rem" }}>Redefinir senha</button>
+</td>
+<td style={{ padding: "10px" }}>
+<button type="button" onClick={function () { handleDeleteLead(lead.id); }} style={{ padding: "6px 10px", border: "1px solid #c0392b", borderRadius: "2px", background: "#fff", color: "#c0392b", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button>
 </td>
 </tr>
 );
