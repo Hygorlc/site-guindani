@@ -82,6 +82,25 @@ body: JSON.stringify({ id: id, status: status }),
 loadLeads(); loadProducts();
 }
 
+async function handleResetPassword(id: number) {
+const newPassword = window.prompt("Digite a nova senha para este cadastro (minimo 6 caracteres):");
+if (!newPassword) return;
+if (newPassword.length < 6) {
+alert("A senha deve ter pelo menos 6 caracteres");
+return;
+}
+const res = await fetch("/api/admin/leads", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ id: id, newPassword: newPassword }),
+});
+if (!res.ok) {
+alert("Erro ao redefinir senha");
+return;
+}
+alert("Senha redefinida com sucesso");
+}
+
 async function handleCreateLead(e: React.FormEvent) {
 e.preventDefault();
 setCreateError("");
@@ -261,6 +280,7 @@ style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px soli
 <th style={{ padding: "10px" }}>Detalhes</th>
 <th style={{ padding: "10px" }}>Status</th>
 <th style={{ padding: "10px" }}>Acoes</th>
+<th style={{ padding: "10px" }}>Senha</th>
 </tr>
 </thead>
 <tbody>
@@ -274,6 +294,9 @@ return (
 <td style={{ padding: "10px", fontSize: "0.75rem", maxWidth: "260px" }}>{(function () { if (!lead.details) return "-"; try { const d = JSON.parse(lead.details); return [d.razaoSocial ? "Razao Social: " + d.razaoSocial : "", d.ie ? "IE: " + d.ie : "", d.ramoDesde ? "No ramo desde: " + d.ramoDesde : "", d.endereco ? "Endereco: " + d.endereco : "", (d.cidade || d.uf) ? "Cidade/UF: " + d.cidade + "/" + d.uf : "", d.cep ? "CEP: " + d.cep : "", d.contato ? "Contato: " + d.contato : "", d.ref1Empresa ? "Ref1: " + d.ref1Empresa + " " + d.ref1CidadeUf + " " + d.ref1Telefone : "", d.ref2Empresa ? "Ref2: " + d.ref2Empresa + " " + d.ref2CidadeUf + " " + d.ref2Telefone : "", d.ref3Empresa ? "Ref3: " + d.ref3Empresa + " " + d.ref3CidadeUf + " " + d.ref3Telefone : "", d.dataFormulario ? "Data: " + d.dataFormulario : ""].filter(Boolean).join(" | "); } catch (e) { return "-"; } })()}</td>
 <td style={{ padding: "10px" }}>{lead.status}</td>
 <td style={{ padding: "10px" }}><div onClick={function () { handleDecision(lead.id, lead.status === "approved" ? "rejected" : "approved"); }} title={lead.status === "approved" ? "Aprovado (clique para desativar)" : "Nao aprovado (clique para ativar)"} style={{ width: "44px", height: "24px", borderRadius: "9999px", background: lead.status === "approved" ? "#C9A96E" : "#ccc", position: "relative", cursor: "pointer", display: "inline-block", transition: "background 0.2s" }}><div style={{ width: "18px", height: "18px", borderRadius: "9999px", background: "#fff", position: "absolute", top: "3px", left: lead.status === "approved" ? "23px" : "3px", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} /></div></td>
+<td style={{ padding: "10px" }}>
+<button type="button" onClick={function () { handleResetPassword(lead.id); }} style={{ padding: "6px 10px", border: "1px solid #ccc", borderRadius: "2px", background: "#fff", cursor: "pointer", fontSize: "0.8rem" }}>Redefinir senha</button>
+</td>
 </tr>
 );
 })}
