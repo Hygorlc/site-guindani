@@ -445,7 +445,72 @@ style={{ color: "#6f6f6f", background: "none", border: "none", textAlign: "left"
 >
 {loggedIn ? "Minha Conta" : "Login"}
 </button>
-        </nav>
+        
+          {loggedIn && (
+            <div style={{ padding: "0.75rem 0", borderTop: "1px solid rgba(0,0,0,0.08)", marginTop: "0.5rem" }}>
+              <form
+                onSubmit={handleProductSearch}
+                style={{ display: "flex", gap: "6px" }}
+              >
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Codigo do produto"
+                  style={{
+                    flex: 1,
+                    border: "1px solid rgba(0,0,0,0.15)",
+                    borderRadius: "2px",
+                    padding: "6px 8px",
+                    fontSize: "0.8rem",
+                    fontFamily: "'Lato', sans-serif",
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    background: "#C9A96E",
+                    border: "none",
+                    borderRadius: "2px",
+                    padding: "6px 10px",
+                    color: "#fff",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  {searching ? "..." : "Buscar"}
+                </button>
+              </form>
+              {searchResults !== null && (
+                <div style={{ marginTop: "10px", maxHeight: "220px", overflowY: "auto" }}>
+                  {searchResults.length === 0 && (
+                    <p style={{ fontSize: "0.78rem", color: "#777", fontFamily: "'Lato', sans-serif" }}>
+                      Nenhum produto encontrado com esse codigo.
+                    </p>
+                  )}
+                  {searchResults.map((p) => (
+                    <div
+                      key={"m-" + p.id}
+                      onClick={() => { setMenuOpen(false); goToProductCategory(p.category); }}
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        padding: "6px 0",
+                        borderBottom: "1px solid rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <img src={p.image_url} alt={p.description} style={{ width: "42px", height: "42px", objectFit: "cover", borderRadius: "2px" }} />
+                      <span style={{ fontSize: "0.72rem", color: "#333", fontFamily: "'Lato', sans-serif" }}>{p.description}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+</nav>
       </div>
     </header>
   );
