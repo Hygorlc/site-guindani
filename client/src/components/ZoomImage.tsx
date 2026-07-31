@@ -13,12 +13,21 @@ export default function ZoomImage(props: ZoomImageProps) {
   const [zoomActive, setZoomActive] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxZoomActive, setLightboxZoomActive] = useState(false);
+  const [lightboxZoomPos, setLightboxZoomPos] = useState({ x: 50, y: 50 });
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setZoomPos({ x: x, y: y });
+  }
+
+  function handleLightboxMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setLightboxZoomPos({ x: x, y: y });
   }
 
   useEffect(function () {
@@ -104,18 +113,36 @@ export default function ZoomImage(props: ZoomImageProps) {
           >
             ×
           </button>
-          <img
-            src={src}
-            alt={alt}
+          <div
             onClick={function (e) { e.stopPropagation(); }}
+            onMouseEnter={function () { setLightboxZoomActive(true); }}
+            onMouseLeave={function () { setLightboxZoomActive(false); }}
+            onMouseMove={handleLightboxMouseMove}
             style={{
               maxWidth: "90vw",
               maxHeight: "90vh",
-              objectFit: "contain",
+              overflow: "hidden",
               borderRadius: "4px",
               boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+              cursor: "zoom-in",
+              display: "inline-block",
+              lineHeight: 0,
             }}
-          />
+          >
+            <img
+              src={src}
+              alt={alt}
+              style={{
+                display: "block",
+                maxWidth: "90vw",
+                maxHeight: "90vh",
+                objectFit: "contain",
+                transform: lightboxZoomActive ? "scale(2)" : "scale(1)",
+                transformOrigin: lightboxZoomPos.x + "% " + lightboxZoomPos.y + "%",
+                transition: lightboxZoomActive ? "none" : "transform 0.25s ease-out",
+              }}
+            />
+          </div>
         </div>
       )}
     </>
