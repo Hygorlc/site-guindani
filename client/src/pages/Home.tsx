@@ -330,7 +330,7 @@ style={{ color: "#6f6f6f", background: "none", border: "none", textAlign: "left"
   );
 }
 
-function HeroSlider() {
+function HeroSlider({ heroSlides }: { heroSlides: any[] }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -1759,7 +1759,7 @@ setLoginOpen(true);
 }}
       />
       <main>
-        <HeroSlider />
+        <HeroSlider heroSlides={heroSlides} />
         <CategoriesSection
           activeTab={activeTab}
           onTabChange={setActiveTab}
