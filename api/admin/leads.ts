@@ -36,6 +36,21 @@ console.error(err);
 return res.status(500).json({ error: "Erro ao redefinir senha" });
 }
 }
-res.setHeader("Allow", "GET, POST");
+if (req.method === "DELETE") {
+const body = req.body || {};
+const id = body.id;
+if (!id) {
+return res.status(400).json({ error: "id e obrigatorio" });
+}
+try {
+const sql = await getDb();
+await sql`DELETE FROM leads WHERE id = ${id}`;
+return res.status(200).json({ ok: true });
+} catch (err) {
+console.error(err);
+return res.status(500).json({ error: "Erro ao excluir cadastro" });
+}
+}
+res.setHeader("Allow", "GET, POST, DELETE");
 return res.status(405).json({ error: "Method not allowed" });
 }
