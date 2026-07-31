@@ -1714,7 +1714,7 @@ export default function Home() {
 const [loginOpen, setLoginOpen] = useState(false);
 const [heroSlides, setHeroSlides] = useState(DEFAULT_HERO_SLIDES);
 useEffect(() => {
-fetch("/api/carousel")
+fetch("/api/products?resource=carousel")
 .then((res) => res.json())
 .then((json) => {
 if (json.slides && json.slides.length > 0) {
