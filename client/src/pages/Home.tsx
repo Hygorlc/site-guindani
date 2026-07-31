@@ -144,6 +144,36 @@ function Topbar() {
 
 function Header({ onCatalog, loggedIn, onLoginClick }: { onCatalog: () => void; loggedIn: boolean; onLoginClick: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[] | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [, setHeaderLocation] = useLocation();
+
+  function handleProductSearch(e: any) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) { setSearchResults(null); return; }
+    setSearching(true);
+    fetch("/api/products")
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        const list = (data.products || []).filter(function (p: any) {
+          return p.description && p.description.toLowerCase().includes(q.toLowerCase());
+        });
+        setSearchResults(list);
+      })
+      .catch(function () { setSearchResults([]); })
+      .finally(function () { setSearching(false); });
+  }
+
+  function goToProductCategory(category: string) {
+    setSearchOpen(false);
+    setSearchResults(null);
+    setSearchQuery("");
+    setHeaderLocation("/categoria/" + category);
+  }
+
 
   const navItems = [
     { label: "Sobre Nós", href: "#sobre" },
@@ -218,6 +248,97 @@ function Header({ onCatalog, loggedIn, onLoginClick }: { onCatalog: () => void; 
               <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
             </svg>
           </a>
+
+        {loggedIn && (
+          <div style={{ position: "relative" }}>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(!searchOpen)}
+              aria-label="Buscar produto por codigo"
+              title="Buscar produto por codigo"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#555", display: "flex", alignItems: "center" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: "18px", height: "18px" }}>
+                <circle cx="11" cy="11" r="7" />
+                <path strokeLinecap="round" d="M21 21l-4.3-4.3" />
+              </svg>
+            </button>
+            {searchOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 12px)",
+                  right: 0,
+                  width: "280px",
+                  background: "#ffffff",
+                  border: "1px solid rgba(0,0,0,0.1)",
+                  borderRadius: "4px",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                  padding: "12px",
+                  zIndex: 60,
+                }}
+              >
+                <form onSubmit={handleProductSearch} style={{ display: "flex", gap: "6px" }}>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Codigo do produto"
+                    style={{
+                      flex: 1,
+                      border: "1px solid rgba(0,0,0,0.15)",
+                      borderRadius: "2px",
+                      padding: "6px 8px",
+                      fontSize: "0.8rem",
+                      fontFamily: "'Lato', sans-serif",
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    style={{
+                      background: "#C9A96E",
+                      border: "none",
+                      borderRadius: "2px",
+                      padding: "6px 10px",
+                      color: "#fff",
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {searching ? "..." : "Buscar"}
+                  </button>
+                </form>
+                {searchResults !== null && (
+                  <div style={{ marginTop: "10px", maxHeight: "260px", overflowY: "auto" }}>
+                    {searchResults.length === 0 && (
+                      <p style={{ fontSize: "0.78rem", color: "#777", fontFamily: "'Lato', sans-serif" }}>
+                        Nenhum produto encontrado com esse codigo.
+                      </p>
+                    )}
+                    {searchResults.map((p) => (
+                      <div
+                        key={p.id}
+                        onClick={() => goToProductCategory(p.category)}
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          padding: "6px 0",
+                          borderBottom: "1px solid rgba(0,0,0,0.06)",
+                        }}
+                      >
+                        <img src={p.image_url} alt={p.description} style={{ width: "42px", height: "42px", objectFit: "cover", borderRadius: "2px" }} />
+                        <span style={{ fontSize: "0.72rem", color: "#333", fontFamily: "'Lato', sans-serif" }}>{p.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 <button
 type="button"
 onClick={onLoginClick}
