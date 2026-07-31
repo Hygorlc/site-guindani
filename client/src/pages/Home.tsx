@@ -1700,6 +1700,23 @@ textDecoration: "underline",
 >
 Agora nao
 </button>
+<a
+href={`https://wa.me/5551997399494?text=${encodeURIComponent("Ola! Esqueci minha senha de acesso ao catalogo" + (data.username ? " (usuario: " + data.username + ")" : "") + ". Podem me ajudar a redefinir?")}`}
+target="_blank"
+rel="noopener noreferrer"
+style={{
+display: "block",
+width: "100%",
+textAlign: "center",
+marginTop: "0.6rem",
+fontFamily: "'Lato', sans-serif",
+fontSize: "0.8rem",
+color: "#999",
+textDecoration: "underline",
+}}
+>
+Esqueceu a senha?
+</a>
 </form>
 </div>
 );
