@@ -110,7 +110,7 @@ setCreating(false);
 
 async function loadProducts() { try { const res = await fetch("/api/admin/products"); if (res.status === 401) { setAuthed(false); return; } const json = await res.json(); setProducts(json.products || []); } catch (err) {} } async function handleAddProduct(e: React.FormEvent) { e.preventDefault(); setProdError(""); if (!prodFile || !prodDescription) { setProdError("Selecione uma imagem e escreva a descricao"); return; } setUploading(true); try { const reader = new FileReader(); const dataUrl: string = await new Promise(function (resolve, reject) { reader.onload = function () { resolve(reader.result as string); }; reader.onerror = reject; reader.readAsDataURL(prodFile as File); }); const uploadRes = await fetch("/api/admin/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: dataUrl, filename: (prodFile as File).name }) }); const uploadJson = await uploadRes.json(); if (!uploadRes.ok) { setProdError(uploadJson.error || "Erro ao enviar imagem"); setUploading(false); return; } const createRes = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: prodCategory, image_url: uploadJson.url, description: prodDescription }) }); if (!createRes.ok) { setProdError("Erro ao salvar produto"); setUploading(false); return; } setProdDescription(""); setProdFile(null); loadProducts(); } catch (err) { setProdError("Erro ao adicionar produto"); } setUploading(false); } async function loadCarousel() {
 try {
-const res = await fetch("/api/admin/carousel");
+const res = await fetch("/api/admin/products?resource=carousel");
 if (res.status === 401) {
 setAuthed(false);
 return;
@@ -146,10 +146,10 @@ setCarouselError(uploadJson.error || "Erro ao enviar imagem");
 setCarouselUploading(false);
 return;
 }
-const createRes = await fetch("/api/admin/carousel", {
+const createRes = await fetch("/api/admin/products", {
 method: "POST",
 headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ image_url: uploadJson.url, title: carouselTitle, subtitle: carouselSubtitle, cta: carouselCta }),
+body: JSON.stringify({ resource: "carousel", image_url: uploadJson.url, title: carouselTitle, subtitle: carouselSubtitle, cta: carouselCta }),
 });
 if (!createRes.ok) {
 setCarouselError("Erro ao salvar imagem do carrossel");
@@ -168,10 +168,10 @@ setCarouselUploading(false);
 }
 
 async function handleDeleteCarouselSlide(id: number) {
-await fetch("/api/admin/carousel", {
+await fetch("/api/admin/products", {
 method: "DELETE",
 headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ id: id }),
+body: JSON.stringify({ resource: "carousel", id: id }),
 });
 loadCarousel();
 }
