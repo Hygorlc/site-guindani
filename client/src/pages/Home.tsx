@@ -1555,6 +1555,7 @@ onSuccess: (status: string) => void;
 const [data, setData] = useState({ username: "", password: "" });
 const [sending, setSending] = useState(false);
 const [error, setError] = useState("");
+const [showPassword, setShowPassword] = useState(false);
 
 if (!open) return null;
 
@@ -1654,9 +1655,9 @@ outline: "none",
 }}
 />
 </div>
-<div style={{ marginBottom: "0.9rem" }}>
+<div style={{ marginBottom: "0.9rem", position: "relative" }}>
 <input
-type="password"
+type={showPassword ? "text" : "password"}
 required
 placeholder="Senha"
 autoComplete="new-password"
@@ -1664,7 +1665,7 @@ value={data.password}
 onChange={(e) => setData({ ...data, password: e.target.value })}
 style={{
 width: "100%",
-padding: "0.6rem 0.85rem",
+padding: "0.6rem 2.4rem 0.6rem 0.85rem",
 border: "1px solid #d4c4a8",
 borderRadius: "2px",
 fontFamily: "'Lato', sans-serif",
@@ -1674,6 +1675,23 @@ background: "white",
 outline: "none",
 }}
 />
+<span
+onClick={function () { setShowPassword(!showPassword); }}
+title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+style={{
+position: "absolute",
+right: "0.7rem",
+top: "50%",
+transform: "translateY(-50%)",
+cursor: "pointer",
+fontSize: "1.1rem",
+lineHeight: 1,
+opacity: showPassword ? 1 : 0.5,
+userSelect: "none",
+}}
+>
+{"\u{1F441}"}
+</span>
 </div>
 {error ? (
 <p style={{ color: "#b00020", fontSize: "0.8rem", marginBottom: "0.9rem" }}>{error}</p>
