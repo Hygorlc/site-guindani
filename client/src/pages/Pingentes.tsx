@@ -24,7 +24,7 @@ export default function Pingentes() { const [extraProducts, setExtraProducts] = 
         </h1>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
           {PINGENTES_IMAGES.map((src, i) => (
-            <div key={src}><ZoomImage src={src} alt={"Pingente Guindani " + (i + 1)} /></div>
+            <div key={src}><ZoomImage src={src} alt={"Pingente Guindani " + (i + 1)} /><p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>Código</p></div>
           ))} {extraProducts.map(function (p) { return (<div key={"extra-" + p.id}><ZoomImage src={p.image_url} alt={p.description} zoomScale={3} /><p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: "#1A1A1A", textAlign: "center", marginTop: "0.75rem" }}>{p.description}</p></div>); })}
         </div>
       </div>
