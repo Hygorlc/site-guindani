@@ -5,6 +5,8 @@ const hmac = crypto.createHmac("sha256", SECRET).update(value).digest("hex");
 return value + "." + hmac;
 }
 export function verifySession(token: string | undefined): boolean {
+// Sem segredo configurado o HMAC vira previsivel e qualquer um forjaria a sessao.
+if (!SECRET) return false;
 if (!token) return false;
 const idx = token.lastIndexOf(".");
 if (idx === -1) return false;

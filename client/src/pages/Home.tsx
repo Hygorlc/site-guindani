@@ -1569,40 +1569,54 @@ function CatalogGateModal({
 }) {
   const [data, setData] = useState({ name: "", cnpj: "", razaoSocial: "", cidade: "", uf: "", cep: "", phone: "", email: "", username: "", password: "" });
   const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   if (!open) return null;
 
-  const handle = (e: React.FormEvent) => {
+  const handle = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError("");
     setSending(true);
-    fetch("https://formsubmit.co/ajax/comercial@guindani.com.br", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
-    nome: data.name,
-    email: data.email,
-    cnpj_cpf: data.cnpj,
-    razao_social: data.razaoSocial,
-    cidade: data.cidade,
-    uf: data.uf,
-    cep: data.cep,
-    telefone: data.phone,
-        usuario: data.username,
-    _subject: "Novo cadastro para acesso ao catálogo Guindani",
-    _template: "table",
-    _captcha: "false",
-    }),
-    }).catch(function () {});
-    fetch("/api/leads", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    }).catch(function () {}).finally(function () {
-    setSending(false);
-    onUnlock();
-    onClose();
-    });
-    };
+    try {
+      // O cadastro no banco e a fonte da verdade: so seguimos adiante se ele gravar.
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json().catch(function () { return {} as { error?: string }; });
+      if (!res.ok) {
+        setSubmitError(json.error || "Nao foi possivel enviar seu cadastro. Tente novamente.");
+        setSending(false);
+        return;
+      }
+      // Aviso por e-mail para o comercial: best-effort, nao bloqueia o cadastro.
+      fetch("https://formsubmit.co/ajax/comercial@guindani.com.br", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          nome: data.name,
+          email: data.email,
+          cnpj_cpf: data.cnpj,
+          razao_social: data.razaoSocial,
+          cidade: data.cidade,
+          uf: data.uf,
+          cep: data.cep,
+          telefone: data.phone,
+          usuario: data.username,
+          _subject: "Novo cadastro para acesso ao catálogo Guindani",
+          _template: "table",
+          _captcha: "false",
+        }),
+      }).catch(function () {});
+      setSending(false);
+      onUnlock();
+      onClose();
+    } catch (err) {
+      setSubmitError("Erro de conexao. Verifique sua internet e tente novamente.");
+      setSending(false);
+    }
+  };
   
   const fields = [
     { key: "name", label: "Nome Completo", type: "text", placeholder: "Nome completo" },
@@ -1705,6 +1719,23 @@ function CatalogGateModal({
             />
           </div>
         ))}
+        {submitError ? (
+          <p
+            style={{
+              fontFamily: "'Lato', sans-serif",
+              fontSize: "0.82rem",
+              color: "#b3261e",
+              background: "#fdecea",
+              border: "1px solid #f5c2bd",
+              borderRadius: "2px",
+              padding: "0.6rem 0.75rem",
+              marginBottom: "0.9rem",
+              lineHeight: 1.5,
+            }}
+          >
+            {submitError}
+          </p>
+        ) : null}
         <button type="submit" className="btn-gold w-full text-center" disabled={sending} style={{ cursor: "pointer" }}>
           {sending ? "Enviando..." : "Liberar Catálogo"}
         </button>
@@ -1940,7 +1971,7 @@ fetch("/api/products?resource=carousel")
 .then((res) => res.json())
 .then((json) => {
 if (json.slides && json.slides.length > 0) {
-setHeroSlides(json.slides.map((s) => ({ img: s.image_url, title: s.title, subtitle: s.subtitle, cta: s.cta })));
+setHeroSlides(json.slides.map((s: { image_url: string; title: string; subtitle: string; cta: string }) => ({ img: s.image_url, title: s.title, subtitle: s.subtitle, cta: s.cta })));
 }
 })
 .catch(() => {});

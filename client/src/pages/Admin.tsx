@@ -18,6 +18,8 @@ const [password, setPassword] = useState("");
 const [error, setError] = useState("");
 const [leads, setLeads] = useState<Lead[]>([]);
 const [loading, setLoading] = useState(false);
+const [sessionExpired, setSessionExpired] = useState(false);
+const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 const [showForm, setShowForm] = useState(false);
 const [newLead, setNewLead] = useState({ name: "", email: "", phone: "", cnpj: "" });
 const [creating, setCreating] = useState(false);
@@ -32,25 +34,50 @@ const [carouselUploading, setCarouselUploading] = useState(false);
 const [prodImgDims, setProdImgDims] = useState<{ [key: number]: { w: number; h: number } }>({});
 const [carouselImgDims, setCarouselImgDims] = useState<{ [key: number]: { w: number; h: number } }>({});
 
-async function loadLeads() {
-setLoading(true);
+async function loadLeads(options?: { silent?: boolean }) {
+const silent = options ? options.silent === true : false;
+if (!silent) setLoading(true);
 try {
-const res = await fetch("/api/admin/leads");
+const res = await fetch("/api/admin/leads", { cache: "no-store" });
 if (res.status === 401) {
 setAuthed(false);
+setSessionExpired(true);
 setLoading(false);
 return;
 }
 const json = await res.json();
 setLeads(json.leads || []);
 setAuthed(true);
+setSessionExpired(false);
+setLastUpdated(new Date());
 } catch (err) {}
-setLoading(false);
+if (!silent) setLoading(false);
 }
 
 useEffect(function () {
 loadLeads(); loadProducts(); loadCarousel();
 }, []);
+
+// Mantem a lista viva: recarrega a cada 30s e sempre que a aba volta a ficar visivel.
+// Sem isso, uma aba aberta ha horas continua mostrando a lista antiga e os cadastros
+// novos parecem nao ter chegado.
+useEffect(function () {
+if (!authed) return;
+function refresh() {
+loadLeads({ silent: true });
+}
+function onVisibilityChange() {
+if (document.visibilityState === "visible") refresh();
+}
+const timer = window.setInterval(refresh, 30000);
+document.addEventListener("visibilitychange", onVisibilityChange);
+window.addEventListener("focus", refresh);
+return function () {
+window.clearInterval(timer);
+document.removeEventListener("visibilitychange", onVisibilityChange);
+window.removeEventListener("focus", refresh);
+};
+}, [authed]);
 
 async function handleLogin(e: React.FormEvent) {
 e.preventDefault();
@@ -67,6 +94,7 @@ return;
 }
 setUsername("");
 setPassword("");
+setSessionExpired(false);
 loadLeads(); loadProducts(); loadCarousel();
 } catch (err) {
 setError("Erro ao entrar");
@@ -143,11 +171,12 @@ setCreateError("Erro ao criar cadastro");
 setCreating(false);
 }
 
-async function loadProducts() { try { const res = await fetch("/api/admin/products"); if (res.status === 401) { setAuthed(false); return; } const json = await res.json(); setProducts(json.products || []); } catch (err) {} } async function handleAddProduct(e: React.FormEvent) { e.preventDefault(); setProdError(""); if (!prodFile || !prodDescription) { setProdError("Selecione uma imagem e escreva a descricao"); return; } setUploading(true); try { const reader = new FileReader(); const dataUrl: string = await new Promise(function (resolve, reject) { reader.onload = function () { resolve(reader.result as string); }; reader.onerror = reject; reader.readAsDataURL(prodFile as File); }); const uploadRes = await fetch("/api/admin/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: dataUrl, filename: (prodFile as File).name }) }); const uploadJson = await uploadRes.json(); if (!uploadRes.ok) { setProdError(uploadJson.error || "Erro ao enviar imagem"); setUploading(false); return; } const createRes = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: prodCategory, image_url: uploadJson.url, description: prodDescription }) }); if (!createRes.ok) { setProdError("Erro ao salvar produto"); setUploading(false); return; } setProdDescription(""); setProdFile(null); loadProducts(); } catch (err) { setProdError("Erro ao adicionar produto"); } setUploading(false); } async function loadCarousel() {
+async function loadProducts() { try { const res = await fetch("/api/admin/products", { cache: "no-store" }); if (res.status === 401) { setAuthed(false); setSessionExpired(true); return; } const json = await res.json(); setProducts(json.products || []); } catch (err) {} } async function handleAddProduct(e: React.FormEvent) { e.preventDefault(); setProdError(""); if (!prodFile || !prodDescription) { setProdError("Selecione uma imagem e escreva a descricao"); return; } setUploading(true); try { const reader = new FileReader(); const dataUrl: string = await new Promise(function (resolve, reject) { reader.onload = function () { resolve(reader.result as string); }; reader.onerror = reject; reader.readAsDataURL(prodFile as File); }); const uploadRes = await fetch("/api/admin/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: dataUrl, filename: (prodFile as File).name }) }); const uploadJson = await uploadRes.json(); if (!uploadRes.ok) { setProdError(uploadJson.error || "Erro ao enviar imagem"); setUploading(false); return; } const createRes = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: prodCategory, image_url: uploadJson.url, description: prodDescription }) }); if (!createRes.ok) { setProdError("Erro ao salvar produto"); setUploading(false); return; } setProdDescription(""); setProdFile(null); loadProducts(); } catch (err) { setProdError("Erro ao adicionar produto"); } setUploading(false); } async function loadCarousel() {
 try {
-const res = await fetch("/api/admin/products?resource=carousel");
+const res = await fetch("/api/admin/products?resource=carousel", { cache: "no-store" });
 if (res.status === 401) {
 setAuthed(false);
+setSessionExpired(true);
 return;
 }
 const json = await res.json();
@@ -216,6 +245,11 @@ return (
 <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1A1A1A" }}>
 <form onSubmit={handleLogin} style={{ background: "#fff", padding: "32px", borderRadius: "4px", width: "320px" }}>
 <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.3rem", marginBottom: "16px" }}>Painel Admin</h1>
+{sessionExpired ? (
+<p style={{ background: "#fdf3e3", border: "1px solid #C9A96E", color: "#7a5b1e", fontSize: "0.8rem", padding: "10px", borderRadius: "2px", marginBottom: "12px", lineHeight: 1.5 }}>
+Sua sessao expirou e a lista parou de atualizar. Entre novamente para ver os cadastros mais recentes.
+</p>
+) : null}
 <input
 type="text"
 placeholder="Usuario"
@@ -239,13 +273,32 @@ Entrar
 );
 }
 
+const pendingCount = leads.filter(function (l) { return l.status === "pending"; }).length;
+
 return (
 <div style={{ minHeight: "100vh", background: "#f7f5f2", padding: "32px" }}><div style={{ marginBottom: "20px", display: "flex", gap: "8px" }}><button onClick={function () { setTab("leads"); }} style={{ padding: "8px 16px", background: tab === "leads" ? "#1A1A1A" : "#fff", color: tab === "leads" ? "#fff" : "#1A1A1A", border: "1px solid #1A1A1A", borderRadius: "2px", cursor: "pointer" }}>Cadastros</button><button onClick={function () { setTab("produtos"); }} style={{ padding: "8px 16px", background: tab === "produtos" ? "#1A1A1A" : "#fff", color: tab === "produtos" ? "#fff" : "#1A1A1A", border: "1px solid #1A1A1A", borderRadius: "2px", cursor: "pointer" }}>Produtos</button><button onClick={function () { setTab("carrossel"); }} style={{ padding: "8px 16px", background: tab === "carrossel" ? "#1A1A1A" : "#fff", color: tab === "carrossel" ? "#fff" : "#1A1A1A", border: "1px solid #1A1A1A", borderRadius: "2px", cursor: "pointer" }}>Carrossel</button></div>{tab === "leads" && (<>
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px", gap: "12px", flexWrap: "wrap" }}>
+<div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
 <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem" }}>Cadastros do Catalogo</h1>
+{pendingCount > 0 ? (
+<span style={{ background: "#C9A96E", color: "#1A1A1A", fontSize: "0.78rem", fontWeight: 700, padding: "4px 10px", borderRadius: "999px", whiteSpace: "nowrap" }}>
+{pendingCount} aguardando aprovacao
+</span>
+) : null}
+</div>
+<div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+{lastUpdated ? (
+<span style={{ fontSize: "0.72rem", color: "#888", whiteSpace: "nowrap" }}>
+Atualizado as {lastUpdated.toLocaleTimeString("pt-BR")}
+</span>
+) : null}
+<button type="button" onClick={function () { loadLeads(); }} disabled={loading} style={{ cursor: loading ? "default" : "pointer", border: "1px solid #1A1A1A", padding: "10px 16px", background: "#fff", color: "#1A1A1A", borderRadius: "2px", opacity: loading ? 0.6 : 1 }}>
+{loading ? "Atualizando..." : "Atualizar"}
+</button>
 <button onClick={function () { setShowForm(!showForm); }} style={{ cursor: "pointer", border: "none", padding: "10px 16px", background: "#C9A96E", color: "#1A1A1A", borderRadius: "2px" }}>
 {showForm ? "Cancelar" : "Adicionar Cadastro"}
 </button>
+</div>
 </div>
 {showForm ? (
 <form onSubmit={handleCreateLead} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", maxWidth: "420px" }}>
@@ -319,7 +372,7 @@ return (
 );
 })}
 </tbody>
-</table></>)}{tab === "produtos" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Produtos das Categorias</h1><form onSubmit={handleAddProduct} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{prodError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{prodError}</p>)}<select value={prodCategory} onChange={function (e) { setProdCategory(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }}><option value="correntes">Correntes</option><option value="gargantilhas">Gargantilhas</option><option value="brincos">Brincos</option><option value="pulseiras">Pulseiras</option><option value="aneis">Aneis</option><option value="pingentes">Pingentes</option></select><input id="prodFileInput" type="file" accept="image/*" onChange={function (e) { setProdFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("prodFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer", marginRight: "10px" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{prodFile ? prodFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Codigo e descricao do produto" value={prodDescription} onChange={function (e) { setProdDescription(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={uploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{uploading ? "Enviando..." : "Adicionar Produto"}</button></form>{["correntes","gargantilhas","brincos","pulseiras","aneis","pingentes"].map(function (cat) { const catLabels = { correntes: "Correntes", gargantilhas: "Gargantilhas", brincos: "Brincos", pulseiras: "Pulseiras", aneis: "Aneis", pingentes: "Pingentes" }; const catProducts = products.filter(function (p) { return p.category === cat; }); if (catProducts.length === 0) { return null; } return (<div key={cat} style={{ marginBottom: "32px" }}><h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", marginBottom: "12px", paddingBottom: "6px", borderBottom: "2px solid #C9A96E" }}>{catLabels[cat]}</h2><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{catProducts.map(function (p) { return (<div key={p.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={p.image_url} alt={p.description} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setProdImgDims(function (prev) { return Object.assign({}, prev, { [p.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{prodImgDims[p.id] ? (prodImgDims[p.id].w + " x " + prodImgDims[p.id].h + " px") : "Carregando tamanho..."}</p><p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{p.description}</p><button onClick={function () { handleDeleteProduct(p.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div>); })}</div></>)}
+</table></>)}{tab === "produtos" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Produtos das Categorias</h1><form onSubmit={handleAddProduct} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{prodError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{prodError}</p>)}<select value={prodCategory} onChange={function (e) { setProdCategory(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }}><option value="correntes">Correntes</option><option value="gargantilhas">Gargantilhas</option><option value="brincos">Brincos</option><option value="pulseiras">Pulseiras</option><option value="aneis">Aneis</option><option value="pingentes">Pingentes</option></select><input id="prodFileInput" type="file" accept="image/*" onChange={function (e) { setProdFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("prodFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer", marginRight: "10px" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{prodFile ? prodFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Codigo e descricao do produto" value={prodDescription} onChange={function (e) { setProdDescription(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={uploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{uploading ? "Enviando..." : "Adicionar Produto"}</button></form>{["correntes","gargantilhas","brincos","pulseiras","aneis","pingentes"].map(function (cat) { const catLabels: Record<string, string> = { correntes: "Correntes", gargantilhas: "Gargantilhas", brincos: "Brincos", pulseiras: "Pulseiras", aneis: "Aneis", pingentes: "Pingentes" }; const catProducts = products.filter(function (p) { return p.category === cat; }); if (catProducts.length === 0) { return null; } return (<div key={cat} style={{ marginBottom: "32px" }}><h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", marginBottom: "12px", paddingBottom: "6px", borderBottom: "2px solid #C9A96E" }}>{catLabels[cat]}</h2><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{catProducts.map(function (p) { return (<div key={p.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={p.image_url} alt={p.description} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setProdImgDims(function (prev) { return Object.assign({}, prev, { [p.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{prodImgDims[p.id] ? (prodImgDims[p.id].w + " x " + prodImgDims[p.id].h + " px") : "Carregando tamanho..."}</p><p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{p.description}</p><button onClick={function () { handleDeleteProduct(p.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div>); })}</div></>)}
 {tab === "carrossel" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Carrossel do Site</h1><form onSubmit={handleAddCarouselSlide} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{carouselError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{carouselError}</p>)}<input id="carouselFileInput" type="file" accept="image/*" onChange={function (e) { setCarouselFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("carouselFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{carouselFile ? carouselFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Titulo (opcional)" value={carouselTitle} onChange={function (e) { setCarouselTitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Subtitulo (opcional)" value={carouselSubtitle} onChange={function (e) { setCarouselSubtitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Texto do botao (opcional)" value={carouselCta} onChange={function (e) { setCarouselCta(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={carouselUploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{carouselUploading ? "Enviando..." : "Adicionar ao Carrossel"}</button></form><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{carouselSlides.map(function (s) { return (<div key={s.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={s.image_url} alt={s.title} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setCarouselImgDims(function (prev) { return Object.assign({}, prev, { [s.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{carouselImgDims[s.id] ? (carouselImgDims[s.id].w + " x " + carouselImgDims[s.id].h + " px") : "Carregando tamanho..."}</p>{s.title && (<p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{s.title}</p>)}<button onClick={function () { handleDeleteCarouselSlide(s.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div></>)}
 </div>
 );
