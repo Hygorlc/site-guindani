@@ -1570,6 +1570,7 @@ function CatalogGateModal({
   const [data, setData] = useState({ name: "", cnpj: "", razaoSocial: "", cidade: "", uf: "", cep: "", phone: "", email: "", username: "", password: "" });
   const [sending, setSending] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   if (!open) return null;
 
@@ -1682,7 +1683,9 @@ function CatalogGateModal({
         >
           Preencha seus dados para liberar as imagens e categorias.
         </p>
-        {fields.map((f) => (
+        {fields.map((f) => {
+          const isPassword = f.type === "password";
+          return (
           <div key={f.key} style={{ marginBottom: "0.9rem" }}>
             <label
               style={{
@@ -1698,27 +1701,49 @@ function CatalogGateModal({
             >
               {f.label}
             </label>
-            <input
-              type={f.type}
-              required={(f as { required?: boolean }).required !== false}
-              placeholder={f.placeholder}
-              autoComplete={f.type === "password" ? "new-password" : "off"}
-              value={(data as Record<string, string>)[f.key]}
-              onChange={(e) => setData({ ...data, [f.key]: e.target.value })}
-              style={{
-                width: "100%",
-                padding: "0.6rem 0.85rem",
-                border: "1px solid #d4c4a8",
-                borderRadius: "2px",
-                fontFamily: "'Lato', sans-serif",
-                fontSize: "0.9rem",
-                color: "#1A1A1A",
-                background: "white",
-                outline: "none",
-              }}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={isPassword ? (showPassword ? "text" : "password") : f.type}
+                required={(f as { required?: boolean }).required !== false}
+                placeholder={f.placeholder}
+                autoComplete={isPassword ? "new-password" : "off"}
+                value={(data as Record<string, string>)[f.key]}
+                onChange={(e) => setData({ ...data, [f.key]: e.target.value })}
+                style={{
+                  width: "100%",
+                  padding: isPassword ? "0.6rem 2.4rem 0.6rem 0.85rem" : "0.6rem 0.85rem",
+                  border: "1px solid #d4c4a8",
+                  borderRadius: "2px",
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: "0.9rem",
+                  color: "#1A1A1A",
+                  background: "white",
+                  outline: "none",
+                }}
+              />
+              {isPassword ? (
+                <span
+                  onClick={function () { setShowPassword(!showPassword); }}
+                  title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  style={{
+                    position: "absolute",
+                    right: "0.7rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    fontSize: "1.1rem",
+                    lineHeight: 1,
+                    opacity: showPassword ? 1 : 0.5,
+                    userSelect: "none",
+                  }}
+                >
+                  {"\u{1F441}"}
+                </span>
+              ) : null}
+            </div>
           </div>
-        ))}
+          );
+        })}
         {submitError ? (
           <p
             style={{
