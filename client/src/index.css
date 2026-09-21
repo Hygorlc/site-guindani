@@ -116,6 +116,26 @@
     }
   }
 
+  header .h-20 {
+    height: 5.75rem;
+  }
+
+  header img[alt="Guindani"] {
+    width: 5.25rem;
+    height: 5.25rem;
+  }
+
+  @media (max-width: 767px) {
+    header .h-20 {
+      height: 5.25rem;
+    }
+
+    header img[alt="Guindani"] {
+      width: 4.75rem;
+      height: 4.75rem;
+    }
+  }
+
   /* Gold button style */
   .btn-gold {
     background-color: #C9A96E;
