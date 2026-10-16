@@ -8,7 +8,14 @@ export default async function handler(req: any, res: any) {
   if (!verifySession(cookies["admin_session"])) {
     return res.status(401).json({ error: "Nao autorizado" });
   }
-  const body = req.body || {};
+  let body = req.body || {};
+  if (typeof body === "string") {
+    try { body = JSON.parse(body); }
+    catch { return res.status(400).json({ error: "Dados invalidos" }); }
+  }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return res.status(400).json({ error: "Dados invalidos" });
+  }
   const isCarousel = req.query.resource === "carousel" || body.resource === "carousel";
   try {
     if (isCarousel) {
@@ -19,6 +26,17 @@ export default async function handler(req: any, res: any) {
         return res.status(200).json({ slides: rows });
       }
       if (req.method === "PATCH") {
+        if (body.id !== undefined) {
+          const id = body.id;
+          const imageUrl = body.image_url;
+          if (!Number.isSafeInteger(id) || id <= 0 || id > 2147483647 ||
+              typeof imageUrl !== "string" || !imageUrl.trim()) {
+            return res.status(400).json({ error: "Imagem e id validos sao obrigatorios" });
+          }
+          const rows = await sql`UPDATE carousel_slides SET image_url = ${imageUrl} WHERE id = ${id} RETURNING id, image_url, title, subtitle, cta`;
+          if (!rows.length) return res.status(404).json({ error: "Imagem nao encontrada" });
+          return res.status(200).json({ ok: true, slide: rows[0] });
+        }
         const ids = body.ids;
         if (!Array.isArray(ids) || ids.length === 0 ||
             !ids.every((id: unknown) => Number.isSafeInteger(id) && Number(id) > 0 && Number(id) <= 2147483647) ||
@@ -53,12 +71,13 @@ export default async function handler(req: any, res: any) {
         return res.status(200).json({ ok: true, id: rows[0].id });
       }
       if (req.method === "DELETE") {
-        const id = body.id;
-        if (!id) {
-          return res.status(400).json({ error: "id e obrigatorio" });
+        const id = Number(body.id ?? req.query.id);
+        if (!Number.isSafeInteger(id) || id <= 0 || id > 2147483647) {
+          return res.status(400).json({ error: "id valido e obrigatorio" });
         }
-        await sql`DELETE FROM carousel_slides WHERE id = ${id}`;
-        return res.status(200).json({ ok: true });
+        const rows = await sql`DELETE FROM carousel_slides WHERE id = ${id} RETURNING id`;
+        if (!rows.length) return res.status(404).json({ error: "Imagem nao encontrada" });
+        return res.status(200).json({ ok: true, id: rows[0].id });
       }
       res.setHeader("Allow", "GET, POST, PATCH, DELETE");
       return res.status(405).json({ error: "Method not allowed" });

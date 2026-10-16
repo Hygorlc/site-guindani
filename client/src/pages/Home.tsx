@@ -1964,17 +1964,33 @@ export default function Home() {
 const [loginOpen, setLoginOpen] = useState(false);
 const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
 useEffect(() => {
+let active = true;
+let requestId = 0;
+const refreshCarousel = () => {
+const currentRequest = ++requestId;
 fetch("/api/products?resource=carousel", { cache: "no-store" })
 .then((res) => {
 if (!res.ok) throw new Error("Erro ao carregar carrossel");
 return res.json();
 })
 .then((json) => {
-if (Array.isArray(json.slides)) {
+if (active && currentRequest === requestId && Array.isArray(json.slides)) {
 setHeroSlides(json.slides.map((s: { image_url: string; title: string; subtitle: string; cta: string }) => ({ img: s.image_url, title: s.title, subtitle: s.subtitle, cta: s.cta })));
 }
 })
 .catch(() => {});
+};
+const onStorage = (event: StorageEvent) => {
+if (event.key === "guindani_carousel_updated") refreshCarousel();
+};
+refreshCarousel();
+window.addEventListener("focus", refreshCarousel);
+window.addEventListener("storage", onStorage);
+return () => {
+active = false;
+window.removeEventListener("focus", refreshCarousel);
+window.removeEventListener("storage", onStorage);
+};
 }, []);
 useEffect(() => {
 if (sessionStorage.getItem("guindani_client_active") !== "1") { return; }
