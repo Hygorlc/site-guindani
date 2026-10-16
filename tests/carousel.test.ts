@@ -71,4 +71,48 @@ describe("carousel API", () => {
     expect(res.status).toHaveBeenCalledWith(401);
     expect(sql).not.toHaveBeenCalled();
   });
+
+  it("replaces only the image and keeps the slide in its position", async () => {
+    const slide = { id: 3, image_url: "/images/new.jpg", title: "Original", subtitle: "Subtitle", cta: "Ver" };
+    sql.mockResolvedValue([slide]);
+    const res = response();
+    await adminHandler({ method: "PATCH", headers: {}, query: {}, body: { resource: "carousel", id: 3, image_url: slide.image_url } }, res);
+    expect(sql.mock.calls[0][0].join("")).toContain("UPDATE carousel_slides SET image_url = ");
+    expect(sql.mock.calls[0][0].join("")).not.toContain("sort_order =");
+    expect(res.json).toHaveBeenCalledWith({ ok: true, slide });
+  });
+
+  it("does not report success when replacing an absent slide", async () => {
+    const res = response();
+    await adminHandler({ method: "PATCH", headers: {}, query: { resource: "carousel" }, body: { id: 3, image_url: "/images/new.jpg" } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("rejects a replacement without an image", async () => {
+    const res = response();
+    await adminHandler({ method: "PATCH", headers: {}, query: { resource: "carousel" }, body: { id: 3 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(sql).not.toHaveBeenCalled();
+  });
+
+  it("confirms deletion of the exact slide even without a DELETE body", async () => {
+    sql.mockResolvedValue([{ id: 3 }]);
+    const res = response();
+    await adminHandler({ method: "DELETE", headers: {}, query: { resource: "carousel", id: "3" } }, res);
+    expect(sql.mock.calls[0].slice(1)).toEqual([3]);
+    expect(res.json).toHaveBeenCalledWith({ ok: true, id: 3 });
+  });
+
+  it("parses a raw JSON request body before deleting", async () => {
+    sql.mockResolvedValue([{ id: 3 }]);
+    const res = response();
+    await adminHandler({ method: "DELETE", headers: {}, query: {}, body: JSON.stringify({ resource: "carousel", id: 3 }) }, res);
+    expect(res.json).toHaveBeenCalledWith({ ok: true, id: 3 });
+  });
+
+  it("does not report success when deleting an absent slide", async () => {
+    const res = response();
+    await adminHandler({ method: "DELETE", headers: {}, query: { resource: "carousel", id: "3" } }, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 });
