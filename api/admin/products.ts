@@ -12,10 +12,34 @@ export default async function handler(req: any, res: any) {
   const isCarousel = req.query.resource === "carousel" || body.resource === "carousel";
   try {
     if (isCarousel) {
+      res.setHeader("Cache-Control", "no-store");
       const sql = await getCarouselDb();
       if (req.method === "GET") {
-        const rows = await sql`SELECT id, image_url, title, subtitle, cta FROM carousel_slides ORDER BY id ASC`;
+        const rows = await sql`SELECT id, image_url, title, subtitle, cta FROM carousel_slides ORDER BY sort_order ASC, id ASC`;
         return res.status(200).json({ slides: rows });
+      }
+      if (req.method === "PATCH") {
+        const ids = body.ids;
+        if (!Array.isArray(ids) || ids.length === 0 ||
+            !ids.every((id: unknown) => Number.isSafeInteger(id) && Number(id) > 0 && Number(id) <= 2147483647) ||
+            new Set(ids).size !== ids.length) {
+          return res.status(400).json({ error: "Ordem invalida" });
+        }
+        // Uma unica instrucao valida a lista inteira e salva sem ordens parciais.
+        const rows = await sql`
+          WITH desired AS (
+            SELECT value::integer AS id, ordinality::integer AS position
+            FROM jsonb_array_elements_text(${JSON.stringify(ids)}::jsonb) WITH ORDINALITY
+          ), valid AS (
+            SELECT 1 WHERE (SELECT COUNT(*) FROM carousel_slides) = ${ids.length}
+              AND (SELECT COUNT(*) FROM carousel_slides JOIN desired USING (id)) = ${ids.length}
+          )
+          UPDATE carousel_slides AS slides SET sort_order = desired.position
+          FROM desired, valid WHERE slides.id = desired.id RETURNING slides.id`;
+        if (rows.length !== ids.length) {
+          return res.status(409).json({ error: "A lista mudou. Atualize o carrossel e tente novamente." });
+        }
+        return res.status(200).json({ ok: true });
       }
       if (req.method === "POST") {
         const image_url = body.image_url;
@@ -25,7 +49,7 @@ export default async function handler(req: any, res: any) {
         if (!image_url) {
           return res.status(400).json({ error: "Imagem e obrigatoria" });
         }
-        const rows = await sql`INSERT INTO carousel_slides (image_url, title, subtitle, cta) VALUES (${image_url}, ${title}, ${subtitle}, ${cta}) RETURNING id`;
+        const rows = await sql`INSERT INTO carousel_slides (image_url, title, subtitle, cta, sort_order) VALUES (${image_url}, ${title}, ${subtitle}, ${cta}, (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM carousel_slides)) RETURNING id`;
         return res.status(200).json({ ok: true, id: rows[0].id });
       }
       if (req.method === "DELETE") {
@@ -36,7 +60,7 @@ export default async function handler(req: any, res: any) {
         await sql`DELETE FROM carousel_slides WHERE id = ${id}`;
         return res.status(200).json({ ok: true });
       }
-      res.setHeader("Allow", "GET, POST, DELETE");
+      res.setHeader("Allow", "GET, POST, PATCH, DELETE");
       return res.status(405).json({ error: "Method not allowed" });
     }
     const sql = await getProductsDb();
