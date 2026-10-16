@@ -44,39 +44,7 @@ const CATEGORIES = [
   },
 ];
 
-const DEFAULT_HERO_SLIDES = [
-  {
-    img: "/images/convite-feninjer-2026.jpg",
-    title: "83ª Feninjer+",
-    subtitle: "17 a 20 de agosto de 2026 — Transamérica Expo Center",
-    cta: "Saiba mais",
-  },
-  {
-    img: "/images/hero-2.jpg",
-    title: "Brilho Contemporâneo",
-    subtitle: "Peças com cristais que impõem presença",
-    cta: "Descobrir peças",
-  },
-  {
-    img: "/images/hero-3.jpg",
-    title: "Design Autêntico",
-    subtitle: "Brincos que traduzem sua personalidade",
-    cta: "Ver brincos",
-  },
-  {
-    img: "/images/hero-4.jpg",
-    title: "Ouro Puro, Estilo Único",
-    subtitle: "Correntes e pulseiras para todos os momentos",
-    cta: "Explorar coleção",
-  },
-  {
-    img: "/images/hero-5.jpg",
-    title: "Amor em Forma de Joia",
-    subtitle: "Peças que eternizam sentimentos",
-    cta: "Ver coleção",
-  },
-];
-
+type HeroSlide = { img: string; title: string; subtitle: string; cta: string };
 const SERVICES = [
   {
     icon: (
@@ -517,26 +485,30 @@ style={{ color: "#6f6f6f", background: "none", border: "none", textAlign: "left"
   );
 }
 
-function HeroSlider({ heroSlides }: { heroSlides: any[] }) {
+function HeroSlider({ heroSlides }: { heroSlides: HeroSlide[] }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTimer = () => {
+    if (heroSlides.length < 2) return;
     timerRef.current = setInterval(() => {
       setCurrent((c) => (c + 1) % heroSlides.length);
     }, 5500);
   };
 
   useEffect(() => {
+    setCurrent(0);
     startTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, []);
+  }, [heroSlides]);
 
   const goTo = (i: number) => {
     setCurrent(i);
     if (timerRef.current) clearInterval(timerRef.current);
     startTimer();
   };
+
+  if (heroSlides.length === 0) return null;
 
   return (
     <section
@@ -1990,12 +1962,15 @@ export default function Home() {
         const [gateOpen, setGateOpen] = useState(false);
           const [leadStatus, setLeadStatus] = useState("none");
 const [loginOpen, setLoginOpen] = useState(false);
-const [heroSlides, setHeroSlides] = useState(DEFAULT_HERO_SLIDES);
+const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
 useEffect(() => {
-fetch("/api/products?resource=carousel")
-.then((res) => res.json())
+fetch("/api/products?resource=carousel", { cache: "no-store" })
+.then((res) => {
+if (!res.ok) throw new Error("Erro ao carregar carrossel");
+return res.json();
+})
 .then((json) => {
-if (json.slides && json.slides.length > 0) {
+if (Array.isArray(json.slides)) {
 setHeroSlides(json.slides.map((s: { image_url: string; title: string; subtitle: string; cta: string }) => ({ img: s.image_url, title: s.title, subtitle: s.subtitle, cta: s.cta })));
 }
 })

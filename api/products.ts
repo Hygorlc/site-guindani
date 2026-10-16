@@ -8,8 +8,9 @@ export default async function handler(req: any, res: any) {
   }
   try {
     if (req.query.resource === "carousel") {
+      res.setHeader("Cache-Control", "no-store");
       const sql = await getCarouselDb();
-      const rows = await sql`SELECT id, image_url, title, subtitle, cta FROM carousel_slides ORDER BY id ASC`;
+      const rows = await sql`SELECT id, image_url, title, subtitle, cta FROM carousel_slides ORDER BY sort_order ASC, id ASC`;
       return res.status(200).json({ slides: rows });
     }
     const sql = await getProductsDb();

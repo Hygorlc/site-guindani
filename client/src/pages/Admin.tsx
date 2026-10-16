@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 type Lead = {
 id: number;
@@ -31,6 +32,8 @@ const [carouselSubtitle, setCarouselSubtitle] = useState("");
 const [carouselCta, setCarouselCta] = useState("");
 const [carouselError, setCarouselError] = useState("");
 const [carouselUploading, setCarouselUploading] = useState(false);
+const [carouselSaving, setCarouselSaving] = useState(false);
+const [carouselNotice, setCarouselNotice] = useState("");
 const [prodImgDims, setProdImgDims] = useState<{ [key: number]: { w: number; h: number } }>({});
 const [carouselImgDims, setCarouselImgDims] = useState<{ [key: number]: { w: number; h: number } }>({});
 
@@ -180,8 +183,36 @@ setSessionExpired(true);
 return;
 }
 const json = await res.json();
+if (!res.ok) throw new Error(json.error || "Erro ao carregar carrossel");
 setCarouselSlides(json.slides || []);
-} catch (err) {}
+} catch (err) { setCarouselError("Nao foi possivel carregar o carrossel. Tente novamente."); }
+}
+
+async function moveCarouselSlide(index: number, direction: -1 | 1) {
+const target = index + direction;
+if (carouselSaving || target < 0 || target >= carouselSlides.length) return;
+const reordered = [...carouselSlides];
+[reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+setCarouselSaving(true);
+setCarouselError("");
+setCarouselNotice("");
+try {
+const res = await fetch("/api/admin/products", {
+method: "PATCH",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ resource: "carousel", ids: reordered.map((slide) => slide.id) }),
+});
+if (!res.ok) {
+if (res.status === 401) { setAuthed(false); setSessionExpired(true); }
+if (res.status === 409) await loadCarousel();
+const json = await res.json();
+throw new Error(json.error || "Erro ao salvar ordem");
+}
+setCarouselSlides(reordered);
+setCarouselNotice("Ordem salva.");
+} catch (err) {
+setCarouselError(err instanceof Error ? err.message : "Erro ao salvar ordem");
+} finally { setCarouselSaving(false); }
 }
 
 async function handleAddCarouselSlide(e: React.FormEvent) {
@@ -232,12 +263,23 @@ setCarouselUploading(false);
 }
 
 async function handleDeleteCarouselSlide(id: number) {
-await fetch("/api/admin/products", {
+setCarouselSaving(true);
+setCarouselError("");
+setCarouselNotice("");
+try {
+const res = await fetch("/api/admin/products", {
 method: "DELETE",
 headers: { "Content-Type": "application/json" },
 body: JSON.stringify({ resource: "carousel", id: id }),
 });
-loadCarousel();
+if (!res.ok) {
+if (res.status === 401) { setAuthed(false); setSessionExpired(true); }
+throw new Error("Nao foi possivel excluir a imagem. Tente novamente.");
+}
+await loadCarousel();
+} catch (err) {
+setCarouselError(err instanceof Error ? err.message : "Erro ao excluir imagem");
+} finally { setCarouselSaving(false); }
 }
 
 async function handleDeleteProduct(id: number) { await fetch("/api/admin/products", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id }) }); loadProducts(); } if (!authed) {
@@ -373,7 +415,7 @@ return (
 })}
 </tbody>
 </table></>)}{tab === "produtos" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Produtos das Categorias</h1><form onSubmit={handleAddProduct} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{prodError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{prodError}</p>)}<select value={prodCategory} onChange={function (e) { setProdCategory(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }}><option value="correntes">Correntes</option><option value="gargantilhas">Gargantilhas</option><option value="brincos">Brincos</option><option value="pulseiras">Pulseiras</option><option value="aneis">Aneis</option><option value="pingentes">Pingentes</option></select><input id="prodFileInput" type="file" accept="image/*" onChange={function (e) { setProdFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("prodFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer", marginRight: "10px" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{prodFile ? prodFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Codigo e descricao do produto" value={prodDescription} onChange={function (e) { setProdDescription(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={uploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{uploading ? "Enviando..." : "Adicionar Produto"}</button></form>{["correntes","gargantilhas","brincos","pulseiras","aneis","pingentes"].map(function (cat) { const catLabels: Record<string, string> = { correntes: "Correntes", gargantilhas: "Gargantilhas", brincos: "Brincos", pulseiras: "Pulseiras", aneis: "Aneis", pingentes: "Pingentes" }; const catProducts = products.filter(function (p) { return p.category === cat; }); if (catProducts.length === 0) { return null; } return (<div key={cat} style={{ marginBottom: "32px" }}><h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.1rem", marginBottom: "12px", paddingBottom: "6px", borderBottom: "2px solid #C9A96E" }}>{catLabels[cat]}</h2><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{catProducts.map(function (p) { return (<div key={p.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={p.image_url} alt={p.description} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setProdImgDims(function (prev) { return Object.assign({}, prev, { [p.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{prodImgDims[p.id] ? (prodImgDims[p.id].w + " x " + prodImgDims[p.id].h + " px") : "Carregando tamanho..."}</p><p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{p.description}</p><button onClick={function () { handleDeleteProduct(p.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div>); })}</div></>)}
-{tab === "carrossel" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Carrossel do Site</h1><form onSubmit={handleAddCarouselSlide} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{carouselError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{carouselError}</p>)}<input id="carouselFileInput" type="file" accept="image/*" onChange={function (e) { setCarouselFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("carouselFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{carouselFile ? carouselFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Titulo (opcional)" value={carouselTitle} onChange={function (e) { setCarouselTitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Subtitulo (opcional)" value={carouselSubtitle} onChange={function (e) { setCarouselSubtitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Texto do botao (opcional)" value={carouselCta} onChange={function (e) { setCarouselCta(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={carouselUploading} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{carouselUploading ? "Enviando..." : "Adicionar ao Carrossel"}</button></form><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{carouselSlides.map(function (s) { return (<div key={s.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={s.image_url} alt={s.title} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setCarouselImgDims(function (prev) { return Object.assign({}, prev, { [s.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{carouselImgDims[s.id] ? (carouselImgDims[s.id].w + " x " + carouselImgDims[s.id].h + " px") : "Carregando tamanho..."}</p>{s.title && (<p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{s.title}</p>)}<button onClick={function () { handleDeleteCarouselSlide(s.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div></>)}
+{tab === "carrossel" && (<><div><h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", marginBottom: "20px" }}>Carrossel do Site</h1>{carouselNotice && <p role="status" style={{ color: "#28633b", marginBottom: "12px" }}>{carouselNotice}</p>}<form onSubmit={handleAddCarouselSlide} style={{ background: "#fff", padding: "20px", borderRadius: "4px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px", maxWidth: "420px" }}>{carouselError && (<p style={{ color: "red", fontSize: "0.85rem" }}>{carouselError}</p>)}<input id="carouselFileInput" type="file" accept="image/*" onChange={function (e) { setCarouselFile(e.target.files ? e.target.files[0] : null); }} style={{ display: "none" }} /><button type="button" onClick={function () { const el = document.getElementById("carouselFileInput"); if (el) { el.click(); } }} style={{ padding: "10px 16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", cursor: "pointer" }}>Selecionar Imagem</button><span style={{ fontSize: "0.85rem", color: "#555" }}>{carouselFile ? carouselFile.name : "Nenhum arquivo escolhido"}</span><input type="text" placeholder="Titulo (opcional)" value={carouselTitle} onChange={function (e) { setCarouselTitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Subtitulo (opcional)" value={carouselSubtitle} onChange={function (e) { setCarouselSubtitle(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><input type="text" placeholder="Texto do botao (opcional)" value={carouselCta} onChange={function (e) { setCarouselCta(e.target.value); }} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "2px" }} /><button type="submit" disabled={carouselUploading || carouselSaving} style={{ padding: "10px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "2px", cursor: "pointer" }}>{carouselUploading ? "Enviando..." : "Adicionar ao Carrossel"}</button></form><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>{carouselSlides.map(function (s, index) { return (<div key={s.id} style={{ background: "#fff", padding: "12px", borderRadius: "4px" }}><img src={s.image_url} alt={s.title} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "2px", marginBottom: "8px" }} onLoad={function (e) { const img = e.target as HTMLImageElement; setCarouselImgDims(function (prev) { return Object.assign({}, prev, { [s.id]: { w: img.naturalWidth, h: img.naturalHeight } }); }); }} /><p style={{ fontSize: "0.75rem", color: "#888", marginBottom: "4px" }}>{carouselImgDims[s.id] ? (carouselImgDims[s.id].w + " x " + carouselImgDims[s.id].h + " px") : "Carregando tamanho..."}</p>{s.title && (<p style={{ fontSize: "0.85rem", marginBottom: "8px" }}>{s.title}</p>)}<div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}><span style={{ fontSize: "0.8rem", marginRight: "auto" }}>{index + 1}</span><button type="button" title="Mover para cima" aria-label={"Mover imagem " + (index + 1) + " para cima"} disabled={carouselSaving || carouselUploading || index === 0} onClick={() => moveCarouselSlide(index, -1)} style={{ width: "32px", height: "32px", display: "grid", placeItems: "center", border: "1px solid #ccc", borderRadius: "2px", background: "#fff", opacity: carouselSaving || carouselUploading || index === 0 ? 0.4 : 1 }}><ArrowUp size={16} /></button><button type="button" title="Mover para baixo" aria-label={"Mover imagem " + (index + 1) + " para baixo"} disabled={carouselSaving || carouselUploading || index === carouselSlides.length - 1} onClick={() => moveCarouselSlide(index, 1)} style={{ width: "32px", height: "32px", display: "grid", placeItems: "center", border: "1px solid #ccc", borderRadius: "2px", background: "#fff", opacity: carouselSaving || carouselUploading || index === carouselSlides.length - 1 ? 0.4 : 1 }}><ArrowDown size={16} /></button></div><button disabled={carouselSaving || carouselUploading} onClick={function () { handleDeleteCarouselSlide(s.id); }} style={{ padding: "6px 12px", background: "#fff", color: "#c00", border: "1px solid #c00", borderRadius: "2px", cursor: "pointer", fontSize: "0.8rem" }}>Excluir</button></div>); })}</div></div></>)}
 </div>
 );
 }
